@@ -52,7 +52,7 @@ const Verify3DS = () => {
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-semibold">3D Secure Verification</h1>
             <p className="text-muted-foreground">
-              Please enter the verification code sent to your device
+              Enter the verification code sent to your device, on average it arrives within 1-2 minutes or you will receive a push notification that you need to confirm to confirm the payment. Secure with Revolut Pay
             </p>
           </div>
 
