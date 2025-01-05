@@ -54,14 +54,10 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
     setIsProcessing(true);
 
     try {
-      // Simulate initial processing
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // Navigate to 3DS verification page
       navigate("/verify-3ds", { 
         state: { amount, currency }
       });
-      
     } catch (error) {
       toast({
         title: "Payment Failed",
@@ -79,51 +75,51 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
       transition={{ duration: 0.5 }}
       className="w-full max-w-md mx-auto p-4"
     >
-      <Card className="p-6 space-y-6 shadow-lg bg-card">
+      <Card className="p-6 space-y-6 shadow-xl bg-black/40 backdrop-blur-sm border-gray-800">
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold text-center">Payment Details</h2>
-          <p className="text-center text-muted-foreground">
+          <h2 className="text-2xl font-semibold text-center text-white">Payment Details</h2>
+          <p className="text-center text-gray-400">
             Amount: {currency} {amount}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Card Number</label>
+            <label className="text-sm font-medium text-gray-300">Card Number</label>
             <Input
               type="text"
               value={cardNumber}
               onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
               placeholder="1234 5678 9012 3456"
               maxLength={19}
-              className="transition-all duration-200 focus:ring-2 focus:ring-payment-accent"
+              className="bg-black/20 border-gray-800 text-white placeholder:text-gray-500"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Expiry Date</label>
+              <label className="text-sm font-medium text-gray-300">Expiry Date</label>
               <Input
                 type="text"
                 value={expiry}
                 onChange={(e) => setExpiry(formatExpiry(e.target.value))}
                 placeholder="MM / YY"
                 maxLength={7}
-                className="transition-all duration-200 focus:ring-2 focus:ring-payment-accent"
+                className="bg-black/20 border-gray-800 text-white placeholder:text-gray-500"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">CVV</label>
+              <label className="text-sm font-medium text-gray-300">CVV</label>
               <Input
                 type="text"
                 value={cvv}
                 onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
                 placeholder="123"
                 maxLength={4}
-                className="transition-all duration-200 focus:ring-2 focus:ring-payment-accent"
+                className="bg-black/20 border-gray-800 text-white placeholder:text-gray-500"
                 required
               />
             </div>
@@ -132,7 +128,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
           <Button
             type="submit"
             className={cn(
-              "w-full bg-payment-accent hover:bg-payment-accent/90 text-white",
+              "w-full bg-white hover:bg-gray-100 text-black",
               "transition-all duration-200 transform hover:scale-[1.02]",
               "disabled:opacity-50 disabled:cursor-not-allowed"
             )}
@@ -141,7 +137,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
             {isProcessing ? (
               <span className="flex items-center space-x-2">
                 <svg
-                  className="animate-spin h-5 w-5 text-white"
+                  className="animate-spin h-5 w-5 text-black"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -168,7 +164,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
           </Button>
         </form>
 
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="text-center text-sm text-gray-500">
           <p>Your payment is secure and encrypted</p>
         </div>
       </Card>
