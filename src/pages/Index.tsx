@@ -1,7 +1,11 @@
 import { PaymentForm } from "@/components/PaymentForm";
 import AdminPanel from "@/components/AdminPanel";
+import { useParams } from "react-router-dom";
 
 export default function Index() {
+  const { id, description } = useParams();
+  const amount = id ? parseFloat(id) : 100;
+
   return (
     <div className="min-h-screen w-full bg-black flex items-center justify-center relative">
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black animate-gradient overflow-hidden">
@@ -10,7 +14,7 @@ export default function Index() {
         </div>
       </div>
       <AdminPanel />
-      <PaymentForm amount={100} />
+      <PaymentForm amount={amount} />
     </div>
   );
 }

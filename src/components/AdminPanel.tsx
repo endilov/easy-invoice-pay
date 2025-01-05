@@ -17,39 +17,6 @@ interface Invoice {
   description: string;
 }
 
-// Luhn algorithm implementation
-const validateCardNumber = (cardNumber: string): boolean => {
-  const digits = cardNumber.replace(/\D/g, '');
-  let sum = 0;
-  let isEven = false;
-
-  // Loop through values starting from the rightmost digit
-  for (let i = digits.length - 1; i >= 0; i--) {
-    let digit = parseInt(digits[i]);
-
-    if (isEven) {
-      digit *= 2;
-      if (digit > 9) {
-        digit -= 9;
-      }
-    }
-
-    sum += digit;
-    isEven = !isEven;
-  }
-
-  return sum % 10 === 0;
-};
-
-// Function to encode invoice parameters
-const encodeInvoiceParams = (amount: number, description: string): string => {
-  const encoded = Buffer.from(`${amount}:${description}`).toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
-  return encoded.slice(0, 5); // Take first 5 characters
-};
-
 const AdminPanel = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -91,8 +58,9 @@ const AdminPanel = () => {
       description: description,
     };
     
-    const encodedParams = encodeInvoiceParams(invoiceAmount, description);
-    const invoiceUrl = `${window.location.origin}/${encodedParams}`;
+    // Create URL-safe description
+    const safeDescription = description.replace(/\s+/g, '-');
+    const invoiceUrl = `${window.location.origin}/checkout/${invoiceAmount}/${safeDescription}`;
     
     console.log("Created invoice:", invoice);
     console.log("Invoice URL:", invoiceUrl);
