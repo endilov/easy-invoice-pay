@@ -1,11 +1,25 @@
 import { PaymentForm } from "@/components/PaymentForm";
 import AdminPanel from "@/components/AdminPanel";
 import { useParams } from "react-router-dom";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 export default function Index() {
   const { id, description } = useParams();
   const amount = id ? parseFloat(id) : 100;
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    // Set initial theme
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    document.documentElement.classList.toggle('dark');
+  };
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center relative overflow-hidden">
@@ -14,6 +28,20 @@ export default function Index() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)] animate-pulse"></div>
         </div>
       </div>
+
+      {/* Theme Toggle Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="fixed top-4 left-4 z-50 bg-black/20 backdrop-blur-lg border border-white/10 hover:bg-white/10 transition-all duration-300"
+        onClick={toggleTheme}
+      >
+        {theme === 'dark' ? (
+          <Sun className="h-5 w-5 text-yellow-500" />
+        ) : (
+          <Moon className="h-5 w-5 text-slate-900" />
+        )}
+      </Button>
       
       <AdminPanel />
       
