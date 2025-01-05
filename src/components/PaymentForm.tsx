@@ -130,9 +130,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10">
+    <form onSubmit={handleSubmit} className="w-full space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 shadow-2xl animate-fadeIn">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-white text-center">
+        <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-center">
           Pay ${amount.toFixed(2)}
         </h2>
       </div>
@@ -143,7 +143,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             placeholder="Card Holder Name"
             value={cardHolder}
             onChange={(e) => setCardHolder(e.target.value)}
-            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
             required
           />
         </div>
@@ -154,7 +154,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             value={cardNumber}
             onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
             maxLength={19}
-            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
             required
           />
         </div>
@@ -166,7 +166,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               value={expiryDate}
               onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
               maxLength={5}
-              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
               required
             />
           </div>
@@ -177,7 +177,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               value={cvv}
               onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
               maxLength={4}
-              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
               required
             />
           </div>
@@ -194,8 +194,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           </span>
         </Button>
       </div>
-      <p className="text-gray-400 text-sm mt-8 text-center">
-      </p>
     </form>
   );
 };
