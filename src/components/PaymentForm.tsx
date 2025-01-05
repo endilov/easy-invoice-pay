@@ -182,7 +182,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </Button>
       </div>
       <p className="text-gray-400 text-sm mt-8">
-        Secure with SSL and Revolut Pay provider
       </p>
     </form>
   );
