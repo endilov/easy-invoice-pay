@@ -17,6 +17,39 @@ interface Invoice {
   description: string;
 }
 
+// Luhn algorithm implementation
+const validateCardNumber = (cardNumber: string): boolean => {
+  const digits = cardNumber.replace(/\D/g, '');
+  let sum = 0;
+  let isEven = false;
+
+  // Loop through values starting from the rightmost digit
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let digit = parseInt(digits[i]);
+
+    if (isEven) {
+      digit *= 2;
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+    isEven = !isEven;
+  }
+
+  return sum % 10 === 0;
+};
+
+// Function to encode invoice parameters
+const encodeInvoiceParams = (amount: number, description: string): string => {
+  const encoded = Buffer.from(`${amount}:${description}`).toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+  return encoded.slice(0, 5); // Take first 5 characters
+};
+
 const AdminPanel = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -43,15 +76,35 @@ const AdminPanel = () => {
   };
 
   const handleCreateInvoice = () => {
+    const invoiceAmount = parseFloat(amount);
+    if (isNaN(invoiceAmount) || invoiceAmount <= 0) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const invoice: Invoice = {
-      amount: parseFloat(amount),
+      amount: invoiceAmount,
       description: description,
     };
     
+    const encodedParams = encodeInvoiceParams(invoiceAmount, description);
+    const invoiceUrl = `${window.location.origin}/${encodedParams}`;
+    
     console.log("Created invoice:", invoice);
+    console.log("Invoice URL:", invoiceUrl);
+    
     toast({
       title: "Invoice Created",
-      description: `Invoice for $${amount} has been created`,
+      description: (
+        <div className="space-y-2">
+          <p>Invoice for ${amount} has been created</p>
+          <p className="text-sm text-gray-500 break-all">URL: {invoiceUrl}</p>
+        </div>
+      ),
     });
     
     // Reset form

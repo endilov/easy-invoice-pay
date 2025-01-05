@@ -1,28 +1,58 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { toast } from "./ui/use-toast";
-import { cn } from "@/lib/utils";
+import { useToast } from "./ui/use-toast";
 
 interface PaymentFormProps {
   amount: number;
-  currency?: string;
-  onPaymentComplete?: () => void;
 }
 
-export const PaymentForm: React.FC<PaymentFormProps> = ({
-  amount,
-  currency = "USD",
-  onPaymentComplete,
-}) => {
+// Luhn algorithm validation
+const validateCardNumber = (cardNumber: string): boolean => {
+  const digits = cardNumber.replace(/\D/g, '');
+  let sum = 0;
+  let isEven = false;
+
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let digit = parseInt(digits[i]);
+
+    if (isEven) {
+      digit *= 2;
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+    isEven = !isEven;
+  }
+
+  return sum % 10 === 0;
+};
+
+export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateCardNumber(cardNumber)) {
+      toast({
+        title: "Invalid Card",
+        description: "Please enter a valid card number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // If validation passes, proceed to 3DS
+    navigate(`/verify-3ds?amount=${amount}`);
+  };
 
   const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
@@ -41,133 +71,64 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
     }
   };
 
-  const formatExpiry = (value: string) => {
+  const formatExpiryDate = (value: string) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
     if (v.length >= 2) {
-      return v.slice(0, 2) + " / " + v.slice(2, 4);
+      return `${v.slice(0, 2)}/${v.slice(2, 4)}`;
     }
     return v;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      navigate("/verify-3ds", { 
-        state: { amount, currency }
-      });
-    } catch (error) {
-      toast({
-        title: "Payment Failed",
-        description: "Please try again or contact support.",
-        variant: "destructive",
-      });
-      setIsProcessing(false);
-    }
-  };
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full max-w-md mx-auto p-4"
-    >
-      <Card className="p-6 space-y-6 shadow-xl bg-black/40 backdrop-blur-sm border-gray-800">
+    <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10">
+      <div className="space-y-2">
+        <h2 className="text-2xl font-bold text-white text-center">
+          Pay ${amount.toFixed(2)}
+        </h2>
+      </div>
+      <div className="space-y-4">
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold text-center text-white">Payment Details</h2>
-          <p className="text-center text-gray-400">
-            Amount: {currency} {amount}
-          </p>
+          <Input
+            type="text"
+            placeholder="Card Number"
+            value={cardNumber}
+            onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+            maxLength={19}
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+            required
+          />
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Card Number</label>
             <Input
               type="text"
-              value={cardNumber}
-              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-              placeholder="1234 5678 9012 3456"
-              maxLength={19}
-              className="bg-black/20 border-gray-800 text-white placeholder:text-gray-500"
+              placeholder="MM/YY"
+              value={expiryDate}
+              onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
+              maxLength={5}
+              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
               required
             />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Expiry Date</label>
-              <Input
-                type="text"
-                value={expiry}
-                onChange={(e) => setExpiry(formatExpiry(e.target.value))}
-                placeholder="MM / YY"
-                maxLength={7}
-                className="bg-black/20 border-gray-800 text-white placeholder:text-gray-500"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">CVV</label>
-              <Input
-                type="text"
-                value={cvv}
-                onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
-                placeholder="123"
-                maxLength={4}
-                className="bg-black/20 border-gray-800 text-white placeholder:text-gray-500"
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Input
+              type="text"
+              placeholder="CVV"
+              value={cvv}
+              onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
+              maxLength={4}
+              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+              required
+            />
           </div>
-
-          <Button
-            type="submit"
-            className={cn(
-              "w-full bg-white hover:bg-gray-100 text-black",
-              "transition-all duration-200 transform hover:scale-[1.02]",
-              "disabled:opacity-50 disabled:cursor-not-allowed"
-            )}
-            disabled={isProcessing}
-          >
-            {isProcessing ? (
-              <span className="flex items-center space-x-2">
-                <svg
-                  className="animate-spin h-5 w-5 text-black"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                <span>Processing...</span>
-              </span>
-            ) : (
-              "Pay Now"
-            )}
-          </Button>
-        </form>
-
-        <div className="text-center text-sm text-gray-500">
-          <p>Your payment is secure and encrypted</p>
         </div>
-      </Card>
-    </motion.div>
+        <Button
+          type="submit"
+          className="w-full bg-white text-black hover:bg-white/90"
+        >
+          Pay Now
+        </Button>
+      </div>
+    </form>
   );
 };
