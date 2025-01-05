@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -21,6 +22,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
 
   const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
@@ -52,29 +54,20 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
     setIsProcessing(true);
 
     try {
-      // Simulate 3DS verification
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Simulate initial processing
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       
-      // Show 3DS modal (in real implementation, this would be handled by the payment provider)
-      const verified = window.confirm("Please verify your payment with your bank (3D Secure)");
+      // Navigate to 3DS verification page
+      navigate("/verify-3ds", { 
+        state: { amount, currency }
+      });
       
-      if (verified) {
-        toast({
-          title: "Payment Successful",
-          description: `Payment of ${currency} ${amount} has been processed.`,
-          duration: 5000,
-        });
-        onPaymentComplete?.();
-      } else {
-        throw new Error("Payment verification failed");
-      }
     } catch (error) {
       toast({
         title: "Payment Failed",
         description: "Please try again or contact support.",
         variant: "destructive",
       });
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -86,7 +79,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
       transition={{ duration: 0.5 }}
       className="w-full max-w-md mx-auto p-4"
     >
-      <Card className="p-6 space-y-6 shadow-lg">
+      <Card className="p-6 space-y-6 shadow-lg bg-card">
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold text-center">Payment Details</h2>
           <p className="text-center text-muted-foreground">
