@@ -74,8 +74,9 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 20%, rgba(62, 44, 146, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(114, 52, 171, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 20% 20%, rgba(62, 44, 146, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(114, 52, 171, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(50, 20, 100, 0.1) 0%, transparent 50%);
   pointer-events: none;
   animation: pulse 8s ease infinite;
 }
@@ -87,7 +88,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+  background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
   pointer-events: none;
 }
 
@@ -105,10 +106,10 @@
 
 @keyframes pulse {
   0%, 100% {
-    opacity: 0.4;
+    opacity: 0.6;
   }
   50% {
-    opacity: 0.8;
+    opacity: 1;
   }
 }
 
@@ -119,6 +120,7 @@
 
 :root:not(.dark) .animated-bg::before {
   background: 
-    radial-gradient(circle at 20% 20%, rgba(100, 100, 255, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(255, 100, 100, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 20% 20%, rgba(100, 100, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 100, 100, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(150, 150, 255, 0.1) 0%, transparent 50%);
 }
