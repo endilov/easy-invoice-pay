@@ -1,5 +1,4 @@
 import { PaymentForm } from "@/components/PaymentForm";
-import AdminPanel from "@/components/AdminPanel";
 import { useParams } from "react-router-dom";
 import { CreditCard, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,8 +40,6 @@ export default function Index() {
           <Moon className="h-5 w-5 text-slate-900" />
         )}
       </Button>
-      
-      <AdminPanel />
       
       <div className="flex flex-col items-center space-y-4 z-10 w-full max-w-md px-4">
         {description && (
