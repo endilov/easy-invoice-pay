@@ -60,7 +60,7 @@ const AdminPanel = () => {
     
     // Create URL-safe description
     const safeDescription = description.replace(/\s+/g, '-');
-    const invoiceUrl = `${window.location.origin}/checkout/${invoiceAmount}/${safeDescription}`;
+    const invoiceUrl = `https://easy-invoice-pay.lovable.app/checkout/${invoiceAmount}/${safeDescription}`;
     
     console.log("Created invoice:", invoice);
     console.log("Invoice URL:", invoiceUrl);
@@ -70,7 +70,14 @@ const AdminPanel = () => {
       description: (
         <div className="space-y-2">
           <p>Invoice for ${amount} has been created</p>
-          <p className="text-sm text-gray-500 break-all">URL: {invoiceUrl}</p>
+          <a 
+            href={invoiceUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-sm text-blue-400 hover:text-blue-300 break-all underline"
+          >
+            {invoiceUrl}
+          </a>
         </div>
       ),
     });
