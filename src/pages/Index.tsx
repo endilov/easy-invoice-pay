@@ -11,7 +11,6 @@ export default function Index() {
   const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
-    // Set initial theme
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
@@ -22,8 +21,8 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black flex flex-col items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 animated-bg">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black animate-gradient overflow-hidden">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)] animate-pulse"></div>
         </div>

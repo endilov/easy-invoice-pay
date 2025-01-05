@@ -82,14 +82,6 @@ export default {
             backgroundPosition: "100% 50%",
           },
         },
-        "border-flow": {
-          "0%, 100%": {
-            backgroundPosition: "0% 50%",
-          },
-          "50%": {
-            backgroundPosition: "100% 50%",
-          },
-        },
         pulse: {
           "0%, 100%": {
             opacity: "0.4",
@@ -104,7 +96,6 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         fadeIn: "fadeIn 0.5s ease-out forwards",
         gradient: "gradient 8s ease infinite",
-        "border-flow": "border-flow 4s ease infinite",
         pulse: "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
