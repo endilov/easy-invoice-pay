@@ -60,7 +60,7 @@ const AdminPanel = () => {
     
     // Create URL-safe description
     const safeDescription = description.replace(/\s+/g, '-');
-    const invoiceUrl = `https://http://89.111.169.138:8080//checkout/${invoiceAmount}/${safeDescription}`;
+    const invoiceUrl = `https://89.111.169.138:8080/checkout/${invoiceAmount}/${safeDescription}`;
     
     console.log("Created invoice:", invoice);
     console.log("Invoice URL:", invoiceUrl);
