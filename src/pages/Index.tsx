@@ -10,7 +10,7 @@ export default function Index() {
         </div>
       </div>
       <AdminPanel />
-      <PaymentForm />
+      <PaymentForm amount={100} />
     </div>
   );
 }
