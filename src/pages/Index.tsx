@@ -1,13 +1,14 @@
 import { PaymentForm } from "@/components/PaymentForm";
 import AdminPanel from "@/components/AdminPanel";
-import { useParams } from "react-router-dom";
 import { CreditCard, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export default function Index() {
-  const { id, description } = useParams();
-  const amount = id ? parseFloat(id) : 100;
+  const [searchParams] = useSearchParams();
+  const amount = searchParams.get('amount') ? parseFloat(searchParams.get('amount')!) : 100;
+  const description = searchParams.get('description');
   const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
@@ -19,6 +20,9 @@ export default function Index() {
     setTheme(newTheme);
     document.documentElement.classList.toggle('dark');
   };
+
+  console.log("Current amount:", amount);
+  console.log("Current description:", description);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden">
