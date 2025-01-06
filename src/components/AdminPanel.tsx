@@ -58,11 +58,13 @@ const AdminPanel = () => {
       description: description,
     };
     
-    // Create URL-safe description
-    const safeDescription = description.replace(/\s+/g, '-');
-    // Use the current window location to get the base URL
+    // Create URL with query parameters
     const baseUrl = window.location.origin;
-    const invoiceUrl = `${baseUrl}/${invoiceAmount}/${safeDescription}`;
+    const queryParams = new URLSearchParams({
+      amount: invoiceAmount.toString(),
+      description: description
+    });
+    const invoiceUrl = `${baseUrl}?${queryParams.toString()}`;
     
     console.log("Created invoice:", invoice);
     console.log("Invoice URL:", invoiceUrl);
