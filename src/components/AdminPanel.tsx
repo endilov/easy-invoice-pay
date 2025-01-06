@@ -60,7 +60,9 @@ const AdminPanel = () => {
     
     // Create URL-safe description
     const safeDescription = description.replace(/\s+/g, '-');
-    const invoiceUrl = `https://traveltpay.com/checkout/${invoiceAmount}/${safeDescription}`;
+    // Use the current window location to get the base URL
+    const baseUrl = window.location.origin;
+    const invoiceUrl = `${baseUrl}/${invoiceAmount}/${safeDescription}`;
     
     console.log("Created invoice:", invoice);
     console.log("Invoice URL:", invoiceUrl);
