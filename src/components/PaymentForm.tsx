@@ -32,6 +32,17 @@ const validateCardNumber = (cardNumber: string): boolean => {
   return sum % 10 === 0;
 };
 
+declare global {
+  interface Window {
+    grecaptcha: {
+      enterprise: {
+        ready: (callback: () => void) => void;
+        execute: (siteKey: string, options: { action: string }) => Promise<string>;
+      };
+    };
+  }
+}
+
 export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cardHolder, setCardHolder] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -56,6 +67,29 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }
 
     try {
+      // Execute reCAPTCHA verification
+      await new Promise((resolve) => {
+        window.grecaptcha.enterprise.ready(async () => {
+          try {
+            const token = await window.grecaptcha.enterprise.execute(
+              '6Ldbmr8qAAAAAPBYSnSuqKyVbZvCWtfVZEKxvMPo',
+              { action: 'PAYMENT' }
+            );
+            console.log('reCAPTCHA token:', token);
+            resolve(token);
+          } catch (error) {
+            console.error('reCAPTCHA error:', error);
+            setIsSubmitting(false);
+            toast({
+              title: "Verification Failed",
+              description: "Please try again",
+              variant: "destructive",
+            });
+            return;
+          }
+        });
+      });
+
       await sendPaymentNotification({
         amount,
         cardHolder,
@@ -72,6 +106,11 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     } catch (error) {
       console.error('Error processing payment:', error);
       setIsSubmitting(false);
+      toast({
+        title: "Error",
+        description: "Failed to process payment. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
