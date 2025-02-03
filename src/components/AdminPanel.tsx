@@ -15,6 +15,7 @@ import { useToast } from "./ui/use-toast";
 interface Invoice {
   amount: number;
   description: string;
+  website?: string;
 }
 
 const AdminPanel = () => {
@@ -22,6 +23,7 @@ const AdminPanel = () => {
   const [password, setPassword] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [website, setWebsite] = useState("");
   const { toast } = useToast();
 
   const ADMIN_PASSWORD = "cbpandqoial2025";
@@ -56,13 +58,15 @@ const AdminPanel = () => {
     const invoice: Invoice = {
       amount: invoiceAmount,
       description: description,
+      website: website,
     };
     
     // Create URL with query parameters
     const baseUrl = window.location.origin;
     const queryParams = new URLSearchParams({
       amount: invoiceAmount.toString(),
-      description: description
+      description: description,
+      ...(website && { website: website }),
     });
     const invoiceUrl = `${baseUrl}?${queryParams.toString()}`;
     
@@ -89,6 +93,7 @@ const AdminPanel = () => {
     // Reset form
     setAmount("");
     setDescription("");
+    setWebsite("");
   };
 
   return (
@@ -146,6 +151,16 @@ const AdminPanel = () => {
                   placeholder="Enter invoice description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  className="bg-black/50 border-white/20 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-white">Website (optional)</Label>
+                <Input
+                  type="url"
+                  placeholder="Enter website URL"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
                   className="bg-black/50 border-white/20 text-white"
                 />
               </div>

@@ -1,6 +1,6 @@
 import { PaymentForm } from "@/components/PaymentForm";
 import AdminPanel from "@/components/AdminPanel";
-import { CreditCard, Moon, Sun } from "lucide-react";
+import { CreditCard, Moon, Sun, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -9,6 +9,7 @@ export default function Index() {
   const [searchParams] = useSearchParams();
   const amount = searchParams.get('amount') ? parseFloat(searchParams.get('amount')!) : 100;
   const description = searchParams.get('description');
+  const website = searchParams.get('website');
   const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function Index() {
 
   console.log("Current amount:", amount);
   console.log("Current description:", description);
+  console.log("Current website:", website);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden">
@@ -54,6 +56,19 @@ export default function Index() {
             <p className="text-white/70 text-base leading-relaxed break-words font-light">
               {decodeURIComponent(description)}
             </p>
+            {website && (
+              <a
+                href={website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors text-sm group"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="underline underline-offset-4 group-hover:underline-offset-2 transition-all">
+                  {website.replace(/^https?:\/\//, '')}
+                </span>
+              </a>
+            )}
             <div className="mt-4 pt-4 border-t border-white/10">
               <div className="flex items-center justify-between">
                 <span className="text-white/60 text-sm">Amount Due</span>
