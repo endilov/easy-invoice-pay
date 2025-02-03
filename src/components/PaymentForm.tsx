@@ -71,16 +71,44 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     return value;
   };
 
+  const validateCardNumber = (value: string) => {
+    return value.replace(/\D/g, '');
+  };
+
   const validateExpiryDate = (value: string) => {
     const cleanValue = value.replace(/\D/g, '');
     if (cleanValue.length >= 2) {
       const month = parseInt(cleanValue.substring(0, 2));
+      const year = cleanValue.length >= 4 ? parseInt(cleanValue.substring(2, 4)) : 0;
+      
+      // Get current date
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear() % 100;
+      const currentMonth = currentDate.getMonth() + 1;
+
+      // Validate month (1-12)
       if (month > 12) {
-        return '12' + cleanValue.substring(2);
+        return '12' + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
       }
-      return cleanValue.substring(0, 2) + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
+
+      // Check if card is expired
+      if (year < currentYear || (year === currentYear && month < currentMonth)) {
+        toast({
+          title: "Invalid Expiry Date",
+          description: "Card has expired",
+          variant: "destructive",
+        });
+        return '';
+      }
+
+      return month.toString().padStart(2, '0') + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
     }
     return cleanValue;
+  };
+
+  const validateCVV = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    return numbers.slice(0, 3); // Limit to 3 digits
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -162,14 +190,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }
   };
 
-  const formatExpiryDate = (value: string) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    if (v.length >= 2) {
-      return `${v.slice(0, 2)}/${v.slice(2, 4)}`;
-    }
-    return v;
-  };
-
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 shadow-2xl animate-fadeIn">
       <div className="space-y-2">
@@ -193,7 +213,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             type="text"
             placeholder="Card Number"
             value={cardNumber}
-            onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+            onChange={(e) => setCardNumber(formatCardNumber(validateCardNumber(e.target.value)))}
             maxLength={19}
             className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
             required
@@ -216,8 +236,8 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               type="text"
               placeholder="CVV"
               value={cvv}
-              onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
-              maxLength={4}
+              onChange={(e) => setCvv(validateCVV(e.target.value))}
+              maxLength={3}
               className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
               required
             />
