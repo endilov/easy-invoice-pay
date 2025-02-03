@@ -105,9 +105,7 @@ const AdminPanel = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="fixed top-4 right-4 bg-black/20 text-white border-white/20 hover:bg-black/40">
-          Admin Panel
-        </Button>
+        <div id="admin-trigger" className="hidden">Admin Panel Trigger</div>
       </SheetTrigger>
       <SheetContent className="bg-black/95 border-white/20">
         <SheetHeader>

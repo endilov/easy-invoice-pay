@@ -19,20 +19,19 @@ export default function Index() {
   const website = searchParams.get('website');
   const refundPolicy = searchParams.get('refundPolicy');
 
-  // Handle keyboard shortcut for admin panel
+  // Handle double click on logo to open admin panel
   useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      // Open admin panel when pressing Ctrl + Alt + A
-      if (event.ctrlKey && event.altKey && event.key === 'a') {
-        const adminButton = document.querySelector('[data-admin-trigger]') as HTMLButtonElement;
-        if (adminButton) {
-          adminButton.click();
+    const handleDoubleClick = (event: MouseEvent) => {
+      if (event.detail === 3) { // Triple click
+        const adminTrigger = document.getElementById('admin-trigger') as HTMLDivElement;
+        if (adminTrigger) {
+          adminTrigger.click();
         }
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    document.addEventListener('click', handleDoubleClick);
+    return () => document.removeEventListener('click', handleDoubleClick);
   }, []);
 
   console.log("Current amount:", amount);
