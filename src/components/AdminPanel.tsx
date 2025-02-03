@@ -16,6 +16,7 @@ interface Invoice {
   amount: number;
   description: string;
   website?: string;
+  refundPolicy?: string;
 }
 
 const AdminPanel = () => {
@@ -24,6 +25,7 @@ const AdminPanel = () => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
+  const [refundPolicy, setRefundPolicy] = useState("");
   const { toast } = useToast();
 
   const ADMIN_PASSWORD = "cbpandqoial2025";
@@ -59,6 +61,7 @@ const AdminPanel = () => {
       amount: invoiceAmount,
       description: description,
       website: website,
+      refundPolicy: refundPolicy,
     };
     
     // Create URL with query parameters
@@ -67,6 +70,7 @@ const AdminPanel = () => {
       amount: invoiceAmount.toString(),
       description: description,
       ...(website && { website: website }),
+      ...(refundPolicy && { refundPolicy: refundPolicy }),
     });
     const invoiceUrl = `${baseUrl}?${queryParams.toString()}`;
     
@@ -94,6 +98,7 @@ const AdminPanel = () => {
     setAmount("");
     setDescription("");
     setWebsite("");
+    setRefundPolicy("");
   };
 
   return (
@@ -161,6 +166,15 @@ const AdminPanel = () => {
                   placeholder="Enter website URL"
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
+                  className="bg-black/50 border-white/20 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-white">Refund Policy (optional)</Label>
+                <Input
+                  placeholder="Enter refund policy"
+                  value={refundPolicy}
+                  onChange={(e) => setRefundPolicy(e.target.value)}
                   className="bg-black/50 border-white/20 text-white"
                 />
               </div>

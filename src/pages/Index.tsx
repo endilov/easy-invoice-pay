@@ -1,16 +1,19 @@
 import { PaymentForm } from "@/components/PaymentForm";
 import AdminPanel from "@/components/AdminPanel";
-import { CreditCard, Moon, Sun, Globe } from "lucide-react";
+import { CreditCard, Moon, Sun, Globe, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Index() {
   const [searchParams] = useSearchParams();
   const amount = searchParams.get('amount') ? parseFloat(searchParams.get('amount')!) : 100;
   const description = searchParams.get('description');
   const website = searchParams.get('website');
+  const refundPolicy = searchParams.get('refundPolicy');
   const [theme, setTheme] = useState('dark');
+  const { toast } = useToast();
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -22,9 +25,20 @@ export default function Index() {
     document.documentElement.classList.toggle('dark');
   };
 
+  const handleRefundPolicyClick = () => {
+    if (refundPolicy) {
+      toast({
+        title: "Refund Policy",
+        description: refundPolicy,
+        className: "bg-black/95 border-white/20",
+      });
+    }
+  };
+
   console.log("Current amount:", amount);
   console.log("Current description:", description);
   console.log("Current website:", website);
+  console.log("Current refund policy:", refundPolicy);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden">
@@ -75,6 +89,16 @@ export default function Index() {
                 <span className="text-white font-medium text-lg">${amount.toFixed(2)}</span>
               </div>
             </div>
+            {refundPolicy && (
+              <Button
+                variant="outline"
+                onClick={handleRefundPolicyClick}
+                className="mt-4 w-full bg-black/30 border-white/20 text-white hover:bg-white/10 transition-all duration-300 group"
+              >
+                <ShieldCheck className="w-4 h-4 mr-2 text-emerald-500 group-hover:scale-110 transition-transform" />
+                Refund Policy
+              </Button>
+            )}
           </div>
         )}
         
