@@ -1,6 +1,6 @@
 import { PaymentForm } from "@/components/PaymentForm";
 import AdminPanel from "@/components/AdminPanel";
-import { CreditCard, Moon, Sun, Globe, ShieldCheck, X } from "lucide-react";
+import { CreditCard, Globe, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export default function Index() {
@@ -18,16 +18,22 @@ export default function Index() {
   const description = searchParams.get('description');
   const website = searchParams.get('website');
   const refundPolicy = searchParams.get('refundPolicy');
-  const [theme, setTheme] = useState('dark');
 
+  // Handle keyboard shortcut for admin panel
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+    const handleKeyPress = (event: KeyboardEvent) => {
+      // Open admin panel when pressing Ctrl + Alt + A
+      if (event.ctrlKey && event.altKey && event.key === 'a') {
+        const adminButton = document.querySelector('[data-admin-trigger]') as HTMLButtonElement;
+        if (adminButton) {
+          adminButton.click();
+        }
+      }
+    };
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-    document.documentElement.classList.toggle('dark');
-  };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
 
   console.log("Current amount:", amount);
   console.log("Current description:", description);
@@ -35,26 +41,7 @@ export default function Index() {
   console.log("Current refund policy:", refundPolicy);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black animate-gradient overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)] animate-pulse"></div>
-        </div>
-      </div>
-
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 left-4 z-50 bg-black/20 backdrop-blur-lg border border-white/10 hover:bg-white/10 transition-all duration-300"
-        onClick={toggleTheme}
-      >
-        {theme === 'dark' ? (
-          <Sun className="h-5 w-5 text-yellow-500" />
-        ) : (
-          <Moon className="h-5 w-5 text-slate-900" />
-        )}
-      </Button>
-      
+    <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden animated-bg">
       <AdminPanel />
       
       <div className="flex flex-col items-center space-y-4 z-10 w-full max-w-md px-4">
