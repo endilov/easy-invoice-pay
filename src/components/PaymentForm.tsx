@@ -59,16 +59,16 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     const dotCount = (value.match(/\./g) || []).length;
     
     if (!latinAndDotRegex.test(value)) {
-      return value.replace(/[^a-zA-Z\s.]/g, '');
+      return value.replace(/[^a-zA-Z\s.]/g, '').toUpperCase();
     }
     
     if (dotCount > 1) {
       // Remove all dots except the first one
       const firstDotIndex = value.indexOf('.');
-      return value.slice(0, firstDotIndex + 1) + value.slice(firstDotIndex + 1).replace(/\./g, '');
+      return (value.slice(0, firstDotIndex + 1) + value.slice(firstDotIndex + 1).replace(/\./g, '')).toUpperCase();
     }
     
-    return value;
+    return value.toUpperCase();
   };
 
   const validateCardNumber = (value: string) => {
@@ -79,26 +79,33 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     const cleanValue = value.replace(/\D/g, '');
     if (cleanValue.length >= 2) {
       const month = parseInt(cleanValue.substring(0, 2));
-      const year = cleanValue.length >= 4 ? parseInt(cleanValue.substring(2, 4)) : 0;
       
-      // Get current date
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear() % 100;
-      const currentMonth = currentDate.getMonth() + 1;
-
-      // Validate month (1-12)
+      // Validate month (1-12) first
       if (month > 12) {
         return '12' + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
       }
+      if (month === 0) {
+        return '01' + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
+      }
 
-      // Check if card is expired
-      if (year < currentYear || (year === currentYear && month < currentMonth)) {
-        toast({
-          title: "Invalid Expiry Date",
-          description: "Card has expired",
-          variant: "destructive",
-        });
-        return '';
+      // Only check expiry if we have a complete date (MM/YY)
+      if (cleanValue.length >= 4) {
+        const year = parseInt(cleanValue.substring(2, 4));
+        
+        // Get current date
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100;
+        const currentMonth = currentDate.getMonth() + 1;
+
+        // Check if card is expired
+        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+          toast({
+            title: "Invalid Expiry Date",
+            description: "Card has expired",
+            variant: "destructive",
+          });
+          return '';
+        }
       }
 
       return month.toString().padStart(2, '0') + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
