@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export default function Index() {
@@ -18,20 +18,35 @@ export default function Index() {
   const description = searchParams.get('description');
   const website = searchParams.get('website');
   const refundPolicy = searchParams.get('refundPolicy');
+  const [clickCount, setClickCount] = useState(0);
 
-  // Handle double click on logo to open admin panel
+  // Handle clicks to open admin panel
   useEffect(() => {
-    const handleDoubleClick = (event: MouseEvent) => {
-      if (event.detail === 3) { // Triple click
-        const adminTrigger = document.getElementById('admin-trigger') as HTMLDivElement;
-        if (adminTrigger) {
-          adminTrigger.click();
+    const handleClick = () => {
+      setClickCount(prev => {
+        const newCount = prev + 1;
+        console.log("Click count:", newCount);
+        
+        if (newCount === 10) {
+          const adminTrigger = document.getElementById('admin-trigger') as HTMLDivElement;
+          if (adminTrigger) {
+            adminTrigger.click();
+          }
+          return 0; // Reset count after opening
         }
-      }
+        
+        // Reset count after 2 seconds of inactivity
+        setTimeout(() => {
+          setClickCount(0);
+          console.log("Click count reset due to inactivity");
+        }, 2000);
+        
+        return newCount;
+      });
     };
 
-    document.addEventListener('click', handleDoubleClick);
-    return () => document.removeEventListener('click', handleDoubleClick);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
   }, []);
 
   console.log("Current amount:", amount);
