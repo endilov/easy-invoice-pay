@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { Loader2 } from "lucide-react";
-import { GridLoader } from "react-spinners";
+import { GridLoader, ScaleLoader } from "react-spinners";
 
 interface PaymentFormProps {
   amount: number;
@@ -262,6 +262,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             />
           </div>
         </div>
+
         <Button
           type="submit"
           disabled={isSubmitting}
@@ -272,8 +273,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           <span className="relative z-10 flex items-center justify-center gap-2">
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Processing...
+                <ScaleLoader color="#ffffff" height={15} width={2} margin={2} />
               </>
             ) : (
               'Pay Now'
