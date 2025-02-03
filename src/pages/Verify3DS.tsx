@@ -172,4 +172,4 @@ export default function Verify3DS() {
       </form>
     </div>
   );
-};
+}
