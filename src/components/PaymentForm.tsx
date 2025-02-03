@@ -4,7 +4,6 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
-import { Loader2 } from "lucide-react";
 import { GridLoader, ScaleLoader } from "react-spinners";
 
 interface PaymentFormProps {
