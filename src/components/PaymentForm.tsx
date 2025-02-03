@@ -54,9 +54,12 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
   // Validation functions
   const validateCardHolder = (value: string) => {
-    // Only Latin letters, spaces, and maximum one dot
+    // Only Latin letters, spaces, and maximum one dot, limit to 12 characters
     const latinAndDotRegex = /^[a-zA-Z\s.]*$/;
     const dotCount = (value.match(/\./g) || []).length;
+    
+    // First limit to 12 characters
+    value = value.slice(0, 12);
     
     if (!latinAndDotRegex.test(value)) {
       return value.replace(/[^a-zA-Z\s.]/g, '').toUpperCase();
