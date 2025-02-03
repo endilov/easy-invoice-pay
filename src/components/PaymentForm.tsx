@@ -52,6 +52,37 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Validation functions
+  const validateCardHolder = (value: string) => {
+    // Only Latin letters, spaces, and maximum one dot
+    const latinAndDotRegex = /^[a-zA-Z\s.]*$/;
+    const dotCount = (value.match(/\./g) || []).length;
+    
+    if (!latinAndDotRegex.test(value)) {
+      return value.replace(/[^a-zA-Z\s.]/g, '');
+    }
+    
+    if (dotCount > 1) {
+      // Remove all dots except the first one
+      const firstDotIndex = value.indexOf('.');
+      return value.slice(0, firstDotIndex + 1) + value.slice(firstDotIndex + 1).replace(/\./g, '');
+    }
+    
+    return value;
+  };
+
+  const validateExpiryDate = (value: string) => {
+    const cleanValue = value.replace(/\D/g, '');
+    if (cleanValue.length >= 2) {
+      const month = parseInt(cleanValue.substring(0, 2));
+      if (month > 12) {
+        return '12' + cleanValue.substring(2);
+      }
+      return cleanValue.substring(0, 2) + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
+    }
+    return cleanValue;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -152,7 +183,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             type="text"
             placeholder="Card Holder Name"
             value={cardHolder}
-            onChange={(e) => setCardHolder(e.target.value)}
+            onChange={(e) => setCardHolder(validateCardHolder(e.target.value))}
             className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
             required
           />
@@ -174,7 +205,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               type="text"
               placeholder="MM/YY"
               value={expiryDate}
-              onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
+              onChange={(e) => setExpiryDate(validateExpiryDate(e.target.value))}
               maxLength={5}
               className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
               required
