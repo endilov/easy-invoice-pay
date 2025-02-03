@@ -10,7 +10,8 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Label } from "./ui/label";
-import { useToast } from "./ui/use-toast";
+import { Textarea } from "./ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 interface Invoice {
   amount: number;
@@ -171,11 +172,11 @@ const AdminPanel = () => {
               </div>
               <div className="space-y-2">
                 <Label className="text-white">Refund Policy (optional)</Label>
-                <Input
+                <Textarea
                   placeholder="Enter refund policy"
                   value={refundPolicy}
                   onChange={(e) => setRefundPolicy(e.target.value)}
-                  className="bg-black/50 border-white/20 text-white"
+                  className="bg-black/50 border-white/20 text-white min-h-[100px] resize-y"
                 />
               </div>
               <Button 

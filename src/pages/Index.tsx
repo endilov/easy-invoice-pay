@@ -1,10 +1,16 @@
 import { PaymentForm } from "@/components/PaymentForm";
 import AdminPanel from "@/components/AdminPanel";
-import { CreditCard, Moon, Sun, Globe, ShieldCheck } from "lucide-react";
+import { CreditCard, Moon, Sun, Globe, ShieldCheck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
 
 export default function Index() {
   const [searchParams] = useSearchParams();
@@ -13,26 +19,14 @@ export default function Index() {
   const website = searchParams.get('website');
   const refundPolicy = searchParams.get('refundPolicy');
   const [theme, setTheme] = useState('dark');
-  const { toast } = useToast();
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
+    setTheme(theme === 'dark' ? 'light' : 'dark');
     document.documentElement.classList.toggle('dark');
-  };
-
-  const handleRefundPolicyClick = () => {
-    if (refundPolicy) {
-      toast({
-        title: "Refund Policy",
-        description: refundPolicy,
-        className: "bg-black/95 border-white/20",
-      });
-    }
   };
 
   console.log("Current amount:", amount);
@@ -90,14 +84,28 @@ export default function Index() {
               </div>
             </div>
             {refundPolicy && (
-              <Button
-                variant="outline"
-                onClick={handleRefundPolicyClick}
-                className="mt-4 w-full bg-black/30 border-white/20 text-white hover:bg-white/10 transition-all duration-300 group"
-              >
-                <ShieldCheck className="w-4 h-4 mr-2 text-emerald-500 group-hover:scale-110 transition-transform" />
-                Refund Policy
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="mt-4 w-full bg-black/30 border-white/20 text-white hover:bg-white/10 transition-all duration-300 group"
+                  >
+                    <ShieldCheck className="w-4 h-4 mr-2 text-emerald-500 group-hover:scale-110 transition-transform" />
+                    Refund Policy
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-black/95 border-white/20 text-white">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                      Refund Policy
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-4 text-white/80 leading-relaxed whitespace-pre-wrap">
+                    {refundPolicy}
+                  </div>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         )}
