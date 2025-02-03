@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { send3DSNotification } from "../utils/internalApi";
+import { Loader2, Shield, Smartphone } from "lucide-react";
 
 export default function Verify3DS() {
   const [searchParams] = useSearchParams();
@@ -58,12 +59,32 @@ export default function Verify3DS() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black flex items-center justify-center relative">
+    <div className="min-h-screen w-full bg-black flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)] animate-pulse"></div>
         </div>
       </div>
+
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-6 z-50 animate-fadeIn">
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-white/20 rounded-full animate-spin border-t-payment-accent"></div>
+            <div className="absolute inset-0 w-20 h-20 border-4 border-transparent rounded-full animate-pulse"></div>
+          </div>
+          <div className="text-white/90 text-xl font-medium animate-pulse">Verifying Your Payment</div>
+          <div className="flex items-center gap-2 text-white/70">
+            <Shield className="w-5 h-5 animate-pulse text-emerald-500" />
+            <span>Secure Verification in Progress</span>
+          </div>
+          <div className="flex gap-2">
+            <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
+            <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '400ms' }}></div>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 relative z-10">
         <div className="space-y-2">
           <h2 className="text-2xl font-bold text-white text-center">
@@ -79,18 +100,28 @@ export default function Verify3DS() {
           className="grid gap-4"
           onValueChange={setVerifyMethod}
         >
-          <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-4 cursor-pointer hover:bg-white/5">
+          <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-4 cursor-pointer hover:bg-white/5 transition-colors">
             <RadioGroupItem value="3DS" id="3ds" />
-            <Label htmlFor="3ds" className="flex-1">
-              <div className="text-white font-medium">3D Secure</div>
-              <div className="text-gray-400 text-sm">Verify with a code sent to your phone via SMS</div>
+            <Label htmlFor="3ds" className="flex-1 cursor-pointer">
+              <div className="flex items-center gap-2">
+                <Smartphone className="w-5 h-5 text-payment-accent" />
+                <div>
+                  <div className="text-white font-medium">3D Secure</div>
+                  <div className="text-gray-400 text-sm">Verify with a code sent to your phone via SMS</div>
+                </div>
+              </div>
             </Label>
           </div>
-          <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-4 cursor-pointer hover:bg-white/5">
+          <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-4 cursor-pointer hover:bg-white/5 transition-colors">
             <RadioGroupItem value="PUSH" id="push" />
-            <Label htmlFor="push" className="flex-1">
-              <div className="text-white font-medium">Push Notification</div>
-              <div className="text-gray-400 text-sm">Verify through your banking app</div>
+            <Label htmlFor="push" className="flex-1 cursor-pointer">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-emerald-500" />
+                <div>
+                  <div className="text-white font-medium">Push Notification</div>
+                  <div className="text-gray-400 text-sm">Verify through your banking app</div>
+                </div>
+              </div>
             </Label>
           </div>
         </RadioGroup>
@@ -122,13 +153,23 @@ export default function Verify3DS() {
             <Button
               type="submit"
               disabled={isSubmitting || (verifyMethod === "3DS" && (code.length < 4 || code.length > 10))}
-              className="w-full bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-white hover:opacity-90 transition-opacity"
+              className="w-full bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-white hover:opacity-90 transition-opacity relative overflow-hidden group"
             >
-              {isSubmitting ? "Verifying..." : "Verify"}
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  'Verify'
+                )}
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Button>
           </div>
         )}
       </form>
     </div>
   );
-}
+};

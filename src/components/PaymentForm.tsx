@@ -4,6 +4,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
+import { Loader2 } from "lucide-react";
 
 interface PaymentFormProps {
   amount: number;
@@ -205,17 +206,22 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 shadow-2xl animate-fadeIn">
-      <div className="space-y-2">
-        <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] text-center">
-          Pay ${totalAmount.toFixed(2)}
-        </h2>
-        <div className="text-center text-sm text-white/60">
-          <span>Amount: ${amount.toFixed(2)}</span>
-          <span className="mx-2">+</span>
-          <span>Commission (1.4%): ${commission.toFixed(2)}</span>
+    <form onSubmit={handleSubmit} className="w-full space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 shadow-2xl animate-fadeIn relative">
+      {isSubmitting && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-4 z-50 animate-fadeIn">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-white/20 rounded-full animate-spin border-t-payment-accent"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent rounded-full animate-pulse"></div>
+          </div>
+          <div className="text-white/90 font-medium animate-pulse">Processing Payment...</div>
+          <div className="flex gap-1.5">
+            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
         </div>
-      </div>
+      )}
+      
       <div className="space-y-4">
         <div className="space-y-2">
           <Input
@@ -269,8 +275,15 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             before:absolute before:inset-0 before:rounded-md before:p-[1px] before:bg-gradient-to-r before:from-[#8B5CF6] before:via-[#D946EF] before:to-[#0EA5E9] before:animate-border-flow before:opacity-0 before:hover:opacity-100 before:transition-opacity before:duration-700
             ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02] hover:shadow-lg'}`}
         >
-          <span className="relative z-10">
-            {isSubmitting ? 'Processing...' : 'Pay Now'}
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Pay Now'
+            )}
           </span>
         </Button>
       </div>
