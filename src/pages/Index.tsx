@@ -49,9 +49,18 @@ export default function Index() {
       
       <div className="flex flex-col items-center space-y-4 z-10 w-full max-w-md px-4">
         {description && (
-          <h2 className="text-white text-xl mb-4 font-bold animate-fadeIn">
-            Payment for: {decodeURIComponent(description)}
-          </h2>
+          <div className="w-full bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 shadow-xl animate-fadeIn">
+            <h2 className="text-white/90 text-xl font-medium mb-2">Payment Details</h2>
+            <p className="text-white/70 text-base leading-relaxed break-words font-light">
+              {decodeURIComponent(description)}
+            </p>
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between">
+                <span className="text-white/60 text-sm">Amount Due</span>
+                <span className="text-white font-medium text-lg">${amount.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
         )}
         
         <PaymentForm amount={amount} />
