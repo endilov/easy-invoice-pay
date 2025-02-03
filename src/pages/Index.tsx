@@ -94,7 +94,7 @@ export default function Index() {
                     Refund Policy
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-black/95 border-white/20 text-white">
+                <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <ShieldCheck className="w-5 h-5 text-emerald-500" />
