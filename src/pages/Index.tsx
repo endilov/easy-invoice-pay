@@ -20,6 +20,15 @@ export default function Index() {
   const refundPolicy = searchParams.get('refundPolicy');
   const [clickCount, setClickCount] = useState(0);
 
+  // Redirect if no parameters are present
+  useEffect(() => {
+    const hasAnyParams = Array.from(searchParams.entries()).length > 0;
+    if (!hasAnyParams) {
+      console.log("No parameters detected, redirecting to Revolut...");
+      window.location.href = "https://www.revolut.com/business/revolut-pay/";
+    }
+  }, [searchParams]);
+
   // Handle clicks to open admin panel
   useEffect(() => {
     const handleClick = () => {
