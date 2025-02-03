@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { send3DSNotification } from "../utils/internalApi";
 import { Loader2, Shield, Smartphone } from "lucide-react";
+import { GridLoader } from "react-spinners";
 
 export default function Verify3DS() {
   const [searchParams] = useSearchParams();
@@ -67,21 +68,14 @@ export default function Verify3DS() {
       </div>
 
       {isSubmitting && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-6 z-50 animate-fadeIn">
-          <div className="relative">
-            <div className="w-20 h-20 border-4 border-white/20 rounded-full animate-spin border-t-payment-accent"></div>
-            <div className="absolute inset-0 w-20 h-20 border-4 border-transparent rounded-full animate-pulse"></div>
-          </div>
-          <div className="text-white/90 text-xl font-medium animate-pulse">Verifying Your Payment</div>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-6 z-50 animate-fadeIn">
+          <GridLoader color="#8B5CF6" size={15} margin={2} />
+          <div className="text-white/90 text-xl font-medium">Verifying Your Payment</div>
           <div className="flex items-center gap-2 text-white/70">
-            <Shield className="w-5 h-5 animate-pulse text-emerald-500" />
+            <Shield className="w-5 h-5 text-emerald-500" />
             <span>Secure Verification in Progress</span>
           </div>
-          <div className="flex gap-2">
-            <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
-            <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '400ms' }}></div>
-          </div>
+          <div className="text-white/60 text-sm">Please do not close this window</div>
         </div>
       )}
 

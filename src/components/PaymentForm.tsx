@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { Loader2 } from "lucide-react";
+import { GridLoader } from "react-spinners";
 
 interface PaymentFormProps {
   amount: number;
@@ -208,17 +209,10 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 shadow-2xl animate-fadeIn relative">
       {isSubmitting && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-4 z-50 animate-fadeIn">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-white/20 rounded-full animate-spin border-t-payment-accent"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent rounded-full animate-pulse"></div>
-          </div>
-          <div className="text-white/90 font-medium animate-pulse">Processing Payment...</div>
-          <div className="flex gap-1.5">
-            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-          </div>
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-6 z-50 animate-fadeIn">
+          <GridLoader color="#8B5CF6" size={15} margin={2} />
+          <div className="text-white/90 font-medium text-lg">Processing Payment...</div>
+          <div className="text-white/60 text-sm">Please do not close this window</div>
         </div>
       )}
       
