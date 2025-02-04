@@ -5,8 +5,9 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
-import { GridLoader, ScaleLoader } from "react-spinners";
-import { Pencil, Building2 } from "lucide-react";
+import { GridLoader } from "react-spinners";
+import { Building2 } from "lucide-react";
+import { EncryptButton } from "./EncryptButton";
 import {
   Dialog,
   DialogContent,
@@ -387,7 +388,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                   <SelectItem value="IN">Indiana</SelectItem>
                   <SelectItem value="IA">Iowa</SelectItem>
                   <SelectItem value="KS">Kansas</SelectItem>
-                  <SelectItem value="KY">Kentucky</SelectItem>
+                  <SelectItem value="KY">Kentucky</SelectItem>;
                   <SelectItem value="LA">Louisiana</SelectItem>
                   <SelectItem value="ME">Maine</SelectItem>
                   <SelectItem value="MD">Maryland</SelectItem>
@@ -437,23 +438,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           </DialogContent>
         </Dialog>
 
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className={`w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white transition-all duration-700
-            before:absolute before:inset-0 before:rounded-md before:p-[1px] before:bg-gradient-to-r before:from-[#8B5CF6] before:via-[#D946EF] before:to-[#0EA5E9] before:animate-border-flow before:opacity-0 before:hover:opacity-100 before:transition-opacity before:duration-700
-            ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02] hover:shadow-lg'}`}
-        >
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            {isSubmitting ? (
-              <>
-                <ScaleLoader color="#ffffff" height={15} width={2} margin={2} />
-              </>
-            ) : (
-              'Pay Now'
-            )}
-          </span>
-        </Button>
+        <EncryptButton isSubmitting={isSubmitting} />
       </div>
     </form>
   );
