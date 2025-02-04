@@ -37,17 +37,11 @@ export default function Index() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden animated-bg">
       <div className="flex flex-col items-center space-y-4 z-10 w-full max-w-md px-4">
-        {(description || company) && (
+        {(description || company || refundPolicy) && (
           <div className="w-full bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 shadow-xl animate-fadeIn">
             <h2 className="text-white/90 text-xl font-medium mb-2">Payment Details</h2>
-            {company && (
-              <div className="flex items-center gap-2 text-white/70 text-sm mb-3">
-                <Building2 className="w-4 h-4" />
-                <span>{decodeURIComponent(company)}</span>
-              </div>
-            )}
             {description && (
-              <p className="text-white/70 text-base leading-relaxed break-words font-light">
+              <p className="text-white/70 text-base leading-relaxed break-words font-light mb-4">
                 {decodeURIComponent(description)}
               </p>
             )}
@@ -70,30 +64,38 @@ export default function Index() {
                 <span className="text-white font-medium text-lg">${amount.toFixed(2)}</span>
               </div>
             </div>
-            {refundPolicy && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="mt-4 w-full bg-black/30 border-white/20 text-white hover:bg-white/10 transition-all duration-300 group"
-                  >
-                    <ShieldCheck className="w-4 h-4 mr-2 text-emerald-500 group-hover:scale-110 transition-transform" />
-                    Refund Policy
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <ShieldCheck className="w-5 h-5 text-emerald-500" />
+            <div className="flex gap-2 mt-4">
+              {refundPolicy && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex-1 bg-black/30 border-white/20 text-white hover:bg-white/10 transition-all duration-300 group"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
                       Refund Policy
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="mt-4 text-white/80 leading-relaxed whitespace-pre-wrap">
-                    {refundPolicy}
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                        Refund Policy
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="mt-4 text-white/80 leading-relaxed whitespace-pre-wrap">
+                      {refundPolicy}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
+              {company && (
+                <div className="flex-1 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium bg-black/30 border border-white/20 text-white px-4 py-2">
+                  <Building2 className="w-4 h-4 text-blue-400" />
+                  {decodeURIComponent(company)}
+                </div>
+              )}
+            </div>
           </div>
         )}
         
