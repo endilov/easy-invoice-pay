@@ -258,24 +258,25 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           </div>
         </div>
 
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <button
-              type="button"
-              className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-250 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.95] group"
-            >
-              <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
-                <Building2 className="w-[18px] h-[18px]" />
-                Billing Details
-              </span>
-            </button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="bg-black/95 border-t border-white/20 text-white">
-            <SheetHeader className="space-y-3 pb-4 border-b border-white/10">
-              <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">
-                Billing Details
-              </SheetTitle>
-            </SheetHeader>
+        <div className="space-y-4">
+          <button
+            type="button"
+            onClick={() => setIsSheetOpen(!isSheetOpen)}
+            className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-250 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.95] group"
+          >
+            <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
+              <Building2 className="w-[18px] h-[18px]" />
+              Billing Details
+            </span>
+          </button>
+          
+          {isSheetOpen && (
+            <div className="animate-fadeIn space-y-6 bg-black/95 border border-white/20 rounded-xl p-6">
+              <div className="space-y-3 pb-4 border-b border-white/10">
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">
+                  Billing Details
+                </h3>
+              </div>
             
             <div className="space-y-6 py-6">
               <div className="space-y-2">
@@ -345,8 +346,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                 </div>
               </div>
             </div>
-          </SheetContent>
-        </Sheet>
+            </div>
+          )}
+        </div>
 
         <EncryptButton isSubmitting={isSubmitting} />
       </div>
