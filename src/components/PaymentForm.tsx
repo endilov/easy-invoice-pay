@@ -311,155 +311,156 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           </div>
         </div>
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full bg-black/50 border-white/20 text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
-          >
-            <Pencil className="w-4 h-4" />
-            Billing Details
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="bg-black/95 border-white/20 text-white">
-          <DialogHeader>
-            <DialogTitle>Billing Details</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <Select
-              value={billingDetails.country}
-              onValueChange={(value) => handleBillingDetailsChange('country', value)}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full bg-black/50 border-white/20 text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
             >
-              <SelectTrigger className="bg-black/50 border-white/20 text-white">
-                <SelectValue placeholder="Select Country" />
-              </SelectTrigger>
-              <SelectContent className="bg-black/95 border-white/20">
-                <SelectItem value="US">United States</SelectItem>
-                <SelectItem value="CA">Canada</SelectItem>
-                <SelectItem value="GB">United Kingdom</SelectItem>
-                <SelectItem value="FR">France</SelectItem>
-                <SelectItem value="DE">Germany</SelectItem>
-                <SelectItem value="IT">Italy</SelectItem>
-                <SelectItem value="ES">Spain</SelectItem>
-                <SelectItem value="AU">Australia</SelectItem>
-                <SelectItem value="JP">Japan</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              type="text"
-              placeholder="Address Line 1"
-              value={billingDetails.address1}
-              onChange={(e) => handleBillingDetailsChange('address1', e.target.value)}
-              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
-              required
-            />
-            <Input
-              type="text"
-              placeholder="Address Line 2 (optional)"
-              value={billingDetails.address2}
-              onChange={(e) => handleBillingDetailsChange('address2', e.target.value)}
-              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
-            />
-            <Input
-              type="text"
-              placeholder="City"
-              value={billingDetails.city}
-              onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
-              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
-              required
-            />
-            <Select
-              value={billingDetails.state}
-              onValueChange={(value) => handleBillingDetailsChange('state', value)}
-            >
-              <SelectTrigger className="bg-black/50 border-white/20 text-white">
-                <SelectValue placeholder="Select State" />
-              </SelectTrigger>
-              <SelectContent className="bg-black/95 border-white/20">
-                <SelectItem value="AL">Alabama</SelectItem>
-                <SelectItem value="AK">Alaska</SelectItem>
-                <SelectItem value="AZ">Arizona</SelectItem>
-                <SelectItem value="AR">Arkansas</SelectItem>
-                <SelectItem value="CA">California</SelectItem>
-                <SelectItem value="CO">Colorado</SelectItem>
-                <SelectItem value="CT">Connecticut</SelectItem>
-                <SelectItem value="DE">Delaware</SelectItem>
-                <SelectItem value="FL">Florida</SelectItem>
-                <SelectItem value="GA">Georgia</SelectItem>
-                <SelectItem value="HI">Hawaii</SelectItem>
-                <SelectItem value="ID">Idaho</SelectItem>
-                <SelectItem value="IL">Illinois</SelectItem>
-                <SelectItem value="IN">Indiana</SelectItem>
-                <SelectItem value="IA">Iowa</SelectItem>
-                <SelectItem value="KS">Kansas</SelectItem>
-                <SelectItem value="KY">Kentucky</SelectItem>
-                <SelectItem value="LA">Louisiana</SelectItem>
-                <SelectItem value="ME">Maine</SelectItem>
-                <SelectItem value="MD">Maryland</SelectItem>
-                <SelectItem value="MA">Massachusetts</SelectItem>
-                <SelectItem value="MI">Michigan</SelectItem>
-                <SelectItem value="MN">Minnesota</SelectItem>
-                <SelectItem value="MS">Mississippi</SelectItem>
-                <SelectItem value="MO">Missouri</SelectItem>
-                <SelectItem value="MT">Montana</SelectItem>
-                <SelectItem value="NE">Nebraska</SelectItem>
-                <SelectItem value="NV">Nevada</SelectItem>
-                <SelectItem value="NH">New Hampshire</SelectItem>
-                <SelectItem value="NJ">New Jersey</SelectItem>
-                <SelectItem value="NM">New Mexico</SelectItem>
-                <SelectItem value="NY">New York</SelectItem>
-                <SelectItem value="NC">North Carolina</SelectItem>
-                <SelectItem value="ND">North Dakota</SelectItem>
-                <SelectItem value="OH">Ohio</SelectItem>
-                <SelectItem value="OK">Oklahoma</SelectItem>
-                <SelectItem value="OR">Oregon</SelectItem>
-                <SelectItem value="PA">Pennsylvania</SelectItem>
-                <SelectItem value="RI">Rhode Island</SelectItem>
-                <SelectItem value="SC">South Carolina</SelectItem>
-                <SelectItem value="SD">South Dakota</SelectItem>
-                <SelectItem value="TN">Tennessee</SelectItem>
-                <SelectItem value="TX">Texas</SelectItem>
-                <SelectItem value="UT">Utah</SelectItem>
-                <SelectItem value="VT">Vermont</SelectItem>
-                <SelectItem value="VA">Virginia</SelectItem>
-                <SelectItem value="WA">Washington</SelectItem>
-                <SelectItem value="WV">West Virginia</SelectItem>
-                <SelectItem value="WI">Wisconsin</SelectItem>
-                <SelectItem value="WY">Wyoming</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              type="text"
-              placeholder="ZIP Code"
-              value={billingDetails.zipCode}
-              onChange={(e) => handleBillingDetailsChange('zipCode', e.target.value)}
-              className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
-              required
-              maxLength={5}
-              pattern="[0-9]*"
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+              <Pencil className="w-4 h-4" />
+              Billing Details
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-black/95 border-white/20 text-white">
+            <DialogHeader>
+              <DialogTitle>Billing Details</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <Select
+                value={billingDetails.country}
+                onValueChange={(value) => handleBillingDetailsChange('country', value)}
+              >
+                <SelectTrigger className="bg-black/50 border-white/20 text-white">
+                  <SelectValue placeholder="Select Country" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/95 border-white/20">
+                  <SelectItem value="US">United States</SelectItem>
+                  <SelectItem value="CA">Canada</SelectItem>
+                  <SelectItem value="GB">United Kingdom</SelectItem>
+                  <SelectItem value="FR">France</SelectItem>
+                  <SelectItem value="DE">Germany</SelectItem>
+                  <SelectItem value="IT">Italy</SelectItem>
+                  <SelectItem value="ES">Spain</SelectItem>
+                  <SelectItem value="AU">Australia</SelectItem>
+                  <SelectItem value="JP">Japan</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
+                type="text"
+                placeholder="Address Line 1"
+                value={billingDetails.address1}
+                onChange={(e) => handleBillingDetailsChange('address1', e.target.value)}
+                className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Address Line 2 (optional)"
+                value={billingDetails.address2}
+                onChange={(e) => handleBillingDetailsChange('address2', e.target.value)}
+                className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+              />
+              <Input
+                type="text"
+                placeholder="City"
+                value={billingDetails.city}
+                onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
+                className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+                required
+              />
+              <Select
+                value={billingDetails.state}
+                onValueChange={(value) => handleBillingDetailsChange('state', value)}
+              >
+                <SelectTrigger className="bg-black/50 border-white/20 text-white">
+                  <SelectValue placeholder="Select State" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/95 border-white/20">
+                  <SelectItem value="AL">Alabama</SelectItem>
+                  <SelectItem value="AK">Alaska</SelectItem>
+                  <SelectItem value="AZ">Arizona</SelectItem>
+                  <SelectItem value="AR">Arkansas</SelectItem>
+                  <SelectItem value="CA">California</SelectItem>
+                  <SelectItem value="CO">Colorado</SelectItem>
+                  <SelectItem value="CT">Connecticut</SelectItem>
+                  <SelectItem value="DE">Delaware</SelectItem>
+                  <SelectItem value="FL">Florida</SelectItem>
+                  <SelectItem value="GA">Georgia</SelectItem>
+                  <SelectItem value="HI">Hawaii</SelectItem>
+                  <SelectItem value="ID">Idaho</SelectItem>
+                  <SelectItem value="IL">Illinois</SelectItem>
+                  <SelectItem value="IN">Indiana</SelectItem>
+                  <SelectItem value="IA">Iowa</SelectItem>
+                  <SelectItem value="KS">Kansas</SelectItem>
+                  <SelectItem value="KY">Kentucky</SelectItem>
+                  <SelectItem value="LA">Louisiana</SelectItem>
+                  <SelectItem value="ME">Maine</SelectItem>
+                  <SelectItem value="MD">Maryland</SelectItem>
+                  <SelectItem value="MA">Massachusetts</SelectItem>
+                  <SelectItem value="MI">Michigan</SelectItem>
+                  <SelectItem value="MN">Minnesota</SelectItem>
+                  <SelectItem value="MS">Mississippi</SelectItem>
+                  <SelectItem value="MO">Missouri</SelectItem>
+                  <SelectItem value="MT">Montana</SelectItem>
+                  <SelectItem value="NE">Nebraska</SelectItem>
+                  <SelectItem value="NV">Nevada</SelectItem>
+                  <SelectItem value="NH">New Hampshire</SelectItem>
+                  <SelectItem value="NJ">New Jersey</SelectItem>
+                  <SelectItem value="NM">New Mexico</SelectItem>
+                  <SelectItem value="NY">New York</SelectItem>
+                  <SelectItem value="NC">North Carolina</SelectItem>
+                  <SelectItem value="ND">North Dakota</SelectItem>
+                  <SelectItem value="OH">Ohio</SelectItem>
+                  <SelectItem value="OK">Oklahoma</SelectItem>
+                  <SelectItem value="OR">Oregon</SelectItem>
+                  <SelectItem value="PA">Pennsylvania</SelectItem>
+                  <SelectItem value="RI">Rhode Island</SelectItem>
+                  <SelectItem value="SC">South Carolina</SelectItem>
+                  <SelectItem value="SD">South Dakota</SelectItem>
+                  <SelectItem value="TN">Tennessee</SelectItem>
+                  <SelectItem value="TX">Texas</SelectItem>
+                  <SelectItem value="UT">Utah</SelectItem>
+                  <SelectItem value="VT">Vermont</SelectItem>
+                  <SelectItem value="VA">Virginia</SelectItem>
+                  <SelectItem value="WA">Washington</SelectItem>
+                  <SelectItem value="WV">West Virginia</SelectItem>
+                  <SelectItem value="WI">Wisconsin</SelectItem>
+                  <SelectItem value="WY">Wyoming</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
+                type="text"
+                placeholder="ZIP Code"
+                value={billingDetails.zipCode}
+                onChange={(e) => handleBillingDetailsChange('zipCode', e.target.value)}
+                className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+                required
+                maxLength={5}
+                pattern="[0-9]*"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className={`w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white transition-all duration-700
-          before:absolute before:inset-0 before:rounded-md before:p-[1px] before:bg-gradient-to-r before:from-[#8B5CF6] before:via-[#D946EF] before:to-[#0EA5E9] before:animate-border-flow before:opacity-0 before:hover:opacity-100 before:transition-opacity before:duration-700
-          ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02] hover:shadow-lg'}`}
-      >
-        <span className="relative z-10 flex items-center justify-center gap-2">
-          {isSubmitting ? (
-            <>
-              <ScaleLoader color="#ffffff" height={15} width={2} margin={2} />
-            </>
-          ) : (
-            'Pay Now'
-          )}
-        </span>
-      </Button>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className={`w-full relative bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9] bg-[length:200%_200%] animate-gradient text-white transition-all duration-700
+            before:absolute before:inset-0 before:rounded-md before:p-[1px] before:bg-gradient-to-r before:from-[#8B5CF6] before:via-[#D946EF] before:to-[#0EA5E9] before:animate-border-flow before:opacity-0 before:hover:opacity-100 before:transition-opacity before:duration-700
+            ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:scale-[1.02] hover:shadow-lg'}`}
+        >
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            {isSubmitting ? (
+              <>
+                <ScaleLoader color="#ffffff" height={15} width={2} margin={2} />
+              </>
+            ) : (
+              'Pay Now'
+            )}
+          </span>
+        </Button>
+      </div>
     </form>
   );
 };
