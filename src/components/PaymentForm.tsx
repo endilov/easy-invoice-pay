@@ -272,7 +272,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           
           {isSheetOpen && (
             <div 
-              className="animate-fadeIn space-y-6 bg-black/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-2xl transition-all duration-300"
+              className="animate-fadeIn space-y-6 bg-transparent backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-2xl transition-all duration-300"
               style={{
                 animation: 'fadeIn 0.5s ease-out, slideUp 0.5s ease-out',
               }}
