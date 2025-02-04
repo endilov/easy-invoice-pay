@@ -318,8 +318,38 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                   <SelectItem value="DE">Germany</SelectItem>
                   <SelectItem value="IT">Italy</SelectItem>
                   <SelectItem value="ES">Spain</SelectItem>
-                  <SelectItem value="AU">Australia</SelectItem>
+                  <SelectItem value="PT">Portugal</SelectItem>
+                  <SelectItem value="NL">Netherlands</SelectItem>
+                  <SelectItem value="BE">Belgium</SelectItem>
+                  <SelectItem value="CH">Switzerland</SelectItem>
+                  <SelectItem value="AT">Austria</SelectItem>
+                  <SelectItem value="SE">Sweden</SelectItem>
+                  <SelectItem value="NO">Norway</SelectItem>
+                  <SelectItem value="DK">Denmark</SelectItem>
+                  <SelectItem value="FI">Finland</SelectItem>
+                  <SelectItem value="IE">Ireland</SelectItem>
+                  <SelectItem value="PL">Poland</SelectItem>
+                  <SelectItem value="CZ">Czech Republic</SelectItem>
+                  <SelectItem value="SK">Slovakia</SelectItem>
+                  <SelectItem value="HU">Hungary</SelectItem>
+                  <SelectItem value="RO">Romania</SelectItem>
+                  <SelectItem value="BG">Bulgaria</SelectItem>
+                  <SelectItem value="GR">Greece</SelectItem>
+                  <SelectItem value="TR">Turkey</SelectItem>
+                  <SelectItem value="IL">Israel</SelectItem>
+                  <SelectItem value="AE">United Arab Emirates</SelectItem>
+                  <SelectItem value="SA">Saudi Arabia</SelectItem>
+                  <SelectItem value="IN">India</SelectItem>
+                  <SelectItem value="CN">China</SelectItem>
                   <SelectItem value="JP">Japan</SelectItem>
+                  <SelectItem value="KR">South Korea</SelectItem>
+                  <SelectItem value="AU">Australia</SelectItem>
+                  <SelectItem value="NZ">New Zealand</SelectItem>
+                  <SelectItem value="BR">Brazil</SelectItem>
+                  <SelectItem value="AR">Argentina</SelectItem>
+                  <SelectItem value="MX">Mexico</SelectItem>
+                  <SelectItem value="ZA">South Africa</SelectItem>
+                  <SelectItem value="EG">Egypt</SelectItem>
                 </SelectContent>
               </Select>
               <Input
@@ -440,3 +470,4 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     </form>
   );
 };
+
