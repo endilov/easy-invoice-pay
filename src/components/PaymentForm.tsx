@@ -7,7 +7,6 @@ import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { GridLoader } from "react-spinners";
 import { Building2 } from "lucide-react";
-import { EncryptButton } from "./EncryptButton";
 import { CardTypeIcon } from "./CardTypeIcon";
 
 const formatCardNumber = (value: string): string => {
@@ -154,8 +153,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!agreementAccepted) {
-      setShowAgreement(true);
+    if (!agreementAccepted && showAgreement) {
       toast({
         title: "Agreement Required",
         description: "Please accept the user agreement to continue",
@@ -372,9 +370,18 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           )}
         </div>
 
-        <div className="flex flex-col space-y-6 mt-8">
+        <div className="flex flex-col space-y-4 mt-8">
+          <button
+            type="submit"
+            onClick={handleEncryptButtonClick}
+            className="w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Processing..." : "Pay Now"}
+          </button>
+          
           {showAgreement && (
-            <label className="agreement-checkbox-container self-start text-white/80 text-sm hover:text-white transition-colors group animate-fadeIn">
+            <label className="agreement-checkbox-container self-start text-white/80 text-sm hover:text-white transition-colors group animate-fadeIn mt-4">
               <input
                 type="checkbox"
                 checked={agreementAccepted}
@@ -386,15 +393,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               </span>
             </label>
           )}
-          
-          <button
-            type="submit"
-            onClick={handleEncryptButtonClick}
-            className="w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Processing..." : "Pay Now"}
-          </button>
         </div>
       </div>
     </form>
