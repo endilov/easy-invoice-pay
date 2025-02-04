@@ -37,6 +37,10 @@ export default function Index() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden animated-bg">
       <div className="flex flex-col items-center space-y-4 z-10 w-full max-w-md px-4">
+        <h1 className="neonText">
+          Neon Pay
+        </h1>
+        
         {(description || company || refundPolicy) && (
           <div className="w-full bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 shadow-xl animate-fadeIn">
             <h2 className="text-white/90 text-xl font-medium mb-2">Payment Details</h2>
