@@ -17,6 +17,7 @@ interface Invoice {
   amount: number;
   description: string;
   website?: string;
+  company?: string;
   refundPolicy?: string;
 }
 
@@ -26,6 +27,7 @@ const AdminPanel = () => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
+  const [company, setCompany] = useState("");
   const [refundPolicy, setRefundPolicy] = useState("");
   const { toast } = useToast();
 
@@ -62,6 +64,7 @@ const AdminPanel = () => {
       amount: invoiceAmount,
       description: description,
       website: website,
+      company: company,
       refundPolicy: refundPolicy,
     };
     
@@ -71,6 +74,7 @@ const AdminPanel = () => {
       amount: invoiceAmount.toString(),
       description: description,
       ...(website && { website: website }),
+      ...(company && { company: company }),
       ...(refundPolicy && { refundPolicy: refundPolicy }),
     });
     const invoiceUrl = `${baseUrl}?${queryParams.toString()}`;
@@ -99,6 +103,7 @@ const AdminPanel = () => {
     setAmount("");
     setDescription("");
     setWebsite("");
+    setCompany("");
     setRefundPolicy("");
   };
 
@@ -155,6 +160,15 @@ const AdminPanel = () => {
                   placeholder="Enter invoice description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  className="bg-black/50 border-white/20 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-white">Company (optional)</Label>
+                <Input
+                  placeholder="Enter company name"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
                   className="bg-black/50 border-white/20 text-white"
                 />
               </div>

