@@ -366,19 +366,21 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           )}
         </div>
 
-        <div className="space-y-4">
-          <label className="agreement-checkbox-container flex items-center text-white/80 text-sm hover:text-white transition-colors">
+        <div className="flex flex-col space-y-6 mt-8">
+          <label className="agreement-checkbox-container self-start text-white/80 text-sm hover:text-white transition-colors group">
             <input
               type="checkbox"
               checked={agreementAccepted}
               onChange={(e) => setAgreementAccepted(e.target.checked)}
             />
             <span className="agreement-checkmark"></span>
-            I agree to the Terms of Service and Privacy Policy
+            <span className="group-hover:text-white/90 transition-colors">
+              I agree to the Terms of Service and Privacy Policy
+            </span>
           </label>
+          
+          <EncryptButton isSubmitting={isSubmitting} />
         </div>
-        
-        <EncryptButton isSubmitting={isSubmitting} />
       </div>
     </form>
   );
