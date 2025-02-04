@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -16,6 +16,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+
+// Add the missing formatCardNumber function
+const formatCardNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, '');
+  const groups = digits.match(/.{1,4}/g) || [];
+  return groups.join(' ').substr(0, 19);
+};
 
 interface PaymentFormProps {
   amount: number;
