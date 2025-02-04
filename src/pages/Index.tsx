@@ -136,6 +136,10 @@ export default function Index() {
               </div>
             </div>
           </div>
+          
+          <p className="text-white/60 text-sm mt-8">
+            © 2025 NeonPay
+          </p>
         </div>
       </div>
     </div>
