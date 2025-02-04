@@ -1,3 +1,5 @@
+/// <reference types="@types/google.maps" />
+
 export interface PlaceResult {
   address1: string;
   address2: string;
@@ -8,6 +10,8 @@ export interface PlaceResult {
 }
 
 export const initPlacesAutocomplete = (inputElement: HTMLInputElement, callback: (result: PlaceResult) => void) => {
+  console.log("Initializing Places Autocomplete");
+  
   const autocomplete = new google.maps.places.Autocomplete(inputElement, {
     componentRestrictions: { country: ["us", "ca"] },
     fields: ["address_components"],
@@ -15,6 +19,7 @@ export const initPlacesAutocomplete = (inputElement: HTMLInputElement, callback:
   });
 
   autocomplete.addListener("place_changed", () => {
+    console.log("Place selected, getting details");
     const place = autocomplete.getPlace();
     const result: PlaceResult = {
       address1: "",
@@ -25,8 +30,14 @@ export const initPlacesAutocomplete = (inputElement: HTMLInputElement, callback:
       country: "",
     };
 
-    for (const component of place.address_components!) {
+    if (!place.address_components) {
+      console.log("No address components found");
+      return;
+    }
+
+    for (const component of place.address_components) {
       const type = component.types[0];
+      console.log(`Processing component type: ${type}`);
       
       switch (type) {
         case "street_number":
@@ -51,6 +62,7 @@ export const initPlacesAutocomplete = (inputElement: HTMLInputElement, callback:
       }
     }
 
+    console.log("Calling callback with result:", result);
     callback(result);
   });
 
