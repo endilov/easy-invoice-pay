@@ -278,14 +278,13 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button
+            <button
               type="button"
-              variant="outline"
-              className="w-full bg-black/50 border-white/20 text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+              className="relative w-full cursor-pointer px-4 py-3 border-0 rounded-lg shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] bg-[radial-gradient(ellipse_at_bottom,rgba(71,81,92,1)_0%,rgba(11,21,30,1)_45%)] text-white/70 transition-all duration-1000 ease-[cubic-bezier(0.15,0.83,0.66,1)] hover:text-white hover:scale-[1.02] hover:translate-y-[-2px] before:content-[''] before:w-[70%] before:h-[1px] before:absolute before:bottom-0 before:left-[15%] before:bg-gradient-to-r before:from-white/0 before:via-white before:to-white/0 before:opacity-20 before:transition-all before:duration-1000 before:ease-[cubic-bezier(0.15,0.83,0.66,1)] hover:before:opacity-100 flex items-center justify-center gap-2"
             >
               <Building2 className="w-4 h-4" />
               Billing Details
-            </Button>
+            </button>
           </DialogTrigger>
           <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
             <DialogHeader>
