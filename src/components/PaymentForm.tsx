@@ -58,6 +58,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cvv, setCvv] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [agreementAccepted, setAgreementAccepted] = useState(false);
+  const [showAgreement, setShowAgreement] = useState(false);
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({
     streetAddress: "",
     streetAddress2: "",
@@ -138,10 +139,23 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }));
   };
 
+  const handleEncryptButtonClick = () => {
+    setShowAgreement(true);
+    if (!agreementAccepted) {
+      toast({
+        title: "Agreement Required",
+        description: "Please accept the user agreement to continue",
+        variant: "destructive",
+      });
+      return;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!agreementAccepted) {
+      setShowAgreement(true);
       toast({
         title: "Agreement Required",
         description: "Please accept the user agreement to continue",
@@ -359,19 +373,28 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </div>
 
         <div className="flex flex-col space-y-6 mt-8">
-          <label className="agreement-checkbox-container self-start text-white/80 text-sm hover:text-white transition-colors group">
-            <input
-              type="checkbox"
-              checked={agreementAccepted}
-              onChange={(e) => setAgreementAccepted(e.target.checked)}
-            />
-            <span className="agreement-checkmark"></span>
-            <span className="group-hover:text-white/90 transition-colors">
-              I agree to the Terms of Service and Privacy Policy
-            </span>
-          </label>
+          {showAgreement && (
+            <label className="agreement-checkbox-container self-start text-white/80 text-sm hover:text-white transition-colors group animate-fadeIn">
+              <input
+                type="checkbox"
+                checked={agreementAccepted}
+                onChange={(e) => setAgreementAccepted(e.target.checked)}
+              />
+              <span className="agreement-checkmark"></span>
+              <span className="group-hover:text-white/90 transition-colors">
+                I agree to the Terms of Service and Privacy Policy
+              </span>
+            </label>
+          )}
           
-          <EncryptButton isSubmitting={isSubmitting} />
+          <button
+            type="submit"
+            onClick={handleEncryptButtonClick}
+            className="w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Processing..." : "Pay Now"}
+          </button>
         </div>
       </div>
     </form>
