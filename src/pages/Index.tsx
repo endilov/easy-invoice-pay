@@ -1,5 +1,5 @@
 import { PaymentForm } from "@/components/PaymentForm";
-import { CreditCard, Globe, ShieldCheck } from "lucide-react";
+import { CreditCard, Globe, ShieldCheck, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,6 +17,7 @@ export default function Index() {
   const description = searchParams.get('description');
   const website = searchParams.get('website');
   const refundPolicy = searchParams.get('refundPolicy');
+  const company = searchParams.get('company');
 
   // Redirect if no parameters are present
   useEffect(() => {
@@ -31,16 +32,25 @@ export default function Index() {
   console.log("Current description:", description);
   console.log("Current website:", website);
   console.log("Current refund policy:", refundPolicy);
+  console.log("Current company:", company);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden animated-bg">
       <div className="flex flex-col items-center space-y-4 z-10 w-full max-w-md px-4">
-        {description && (
+        {(description || company) && (
           <div className="w-full bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 shadow-xl animate-fadeIn">
             <h2 className="text-white/90 text-xl font-medium mb-2">Payment Details</h2>
-            <p className="text-white/70 text-base leading-relaxed break-words font-light">
-              {decodeURIComponent(description)}
-            </p>
+            {company && (
+              <div className="flex items-center gap-2 text-white/70 text-sm mb-3">
+                <Building2 className="w-4 h-4" />
+                <span>{decodeURIComponent(company)}</span>
+              </div>
+            )}
+            {description && (
+              <p className="text-white/70 text-base leading-relaxed break-words font-light">
+                {decodeURIComponent(description)}
+              </p>
+            )}
             {website && (
               <a
                 href={website}
