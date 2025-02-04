@@ -90,6 +90,14 @@ export default {
             opacity: "0.8",
           },
         },
+        "border-pulse": {
+          "0%, 100%": {
+            borderColor: "rgba(255, 255, 255, 0.1)",
+          },
+          "50%": {
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
