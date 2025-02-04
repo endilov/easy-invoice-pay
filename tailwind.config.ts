@@ -98,6 +98,18 @@ export default {
             borderColor: "rgba(255, 255, 255, 0.3)",
           },
         },
+        floatingPoints: {
+          '0%': { transform: 'translateY(0)' },
+          '85%': { opacity: '0' },
+          '100%': { transform: 'translateY(-55px)', opacity: '0' }
+        },
+        dasharray: {
+          'from': { strokeDasharray: '0 0 0 0' },
+          'to': { strokeDasharray: '68 68 0 0' }
+        },
+        filled: {
+          'to': { fill: 'white' }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -105,6 +117,9 @@ export default {
         fadeIn: "fadeIn 0.5s ease-out forwards",
         gradient: "gradient 8s ease infinite",
         pulse: "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        'floating-points': 'floatingPoints 2s infinite ease-in-out',
+        'icon-dash': 'dasharray 1s linear forwards',
+        'icon-fill': 'filled 0.1s linear forwards 0.95s'
       },
     },
   },

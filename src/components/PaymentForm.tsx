@@ -280,10 +280,29 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           <DialogTrigger asChild>
             <button
               type="button"
-              className="relative w-full cursor-pointer px-4 py-3 border-0 rounded-lg shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] bg-[radial-gradient(ellipse_at_bottom,rgba(71,81,92,1)_0%,rgba(11,21,30,1)_45%)] text-white/70 transition-all duration-1000 ease-[cubic-bezier(0.15,0.83,0.66,1)] hover:text-white hover:scale-[1.02] hover:translate-y-[-2px] before:content-[''] before:w-[70%] before:h-[1px] before:absolute before:bottom-0 before:left-[15%] before:bg-gradient-to-r before:from-white/0 before:via-white before:to-white/0 before:opacity-20 before:transition-all before:duration-1000 before:ease-[cubic-bezier(0.15,0.83,0.66,1)] hover:before:opacity-100 flex items-center justify-center gap-2"
+              className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-250 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.95] group"
             >
-              <Building2 className="w-4 h-4" />
-              Billing Details
+              <span className="absolute top-0 right-0 h-4 w-4 transition-all duration-500 bg-[radial-gradient(100%_75%_at_55%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%)] shadow-md rounded-br-xl rounded-tl-lg after:content-[''] after:absolute after:top-0 after:right-0 after:w-[150%] after:h-[150%] after:rotate-45 after:translate-x-0 after:-translate-y-[18px] after:bg-gray-200 after:pointer-events-none group-hover:-mt-4 group-hover:-mr-4" />
+
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <i
+                    key={i}
+                    className={`absolute bottom-[-10px] w-[2px] h-[2px] bg-white rounded-full animate-floating-points`}
+                    style={{
+                      left: `${[10, 30, 25, 44, 50, 75, 88, 58, 98, 65][i]}%`,
+                      opacity: [1, 0.7, 0.8, 0.6, 1, 0.5, 0.9, 0.8, 0.6, 1][i],
+                      animationDuration: `${[2.35, 2.5, 2.2, 2.05, 1.9, 1.5, 2.2, 2.25, 2.6, 2.5][i]}s`,
+                      animationDelay: `${[0.2, 0.5, 0.1, 0, 0, 1.5, 0.2, 0.2, 0.1, 0.2][i]}s`
+                    }}
+                  />
+                ))}
+              </div>
+
+              <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
+                <Building2 className="w-[18px] h-[18px] transition-all duration-100 group-hover:fill-transparent group-hover:animate-icon-dash group-focus:fill-white group-hover:animate-icon-fill" />
+                Billing Details
+              </span>
             </button>
           </DialogTrigger>
           <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
