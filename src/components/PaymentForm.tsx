@@ -9,15 +9,7 @@ import { GridLoader } from "react-spinners";
 import { Building2 } from "lucide-react";
 import { EncryptButton } from "./EncryptButton";
 import { CardTypeIcon } from "./CardTypeIcon";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "./ui/sheet";
 
-// Add the missing formatCardNumber function
 const formatCardNumber = (value: string): string => {
   const digits = value.replace(/\D/g, '');
   const groups = digits.match(/.{1,4}/g) || [];
@@ -148,17 +140,17 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
+    
     if (!agreementAccepted) {
       toast({
         title: "Agreement Required",
         description: "Please accept the user agreement to continue",
         variant: "destructive",
       });
-      setIsSubmitting(false);
       return;
     }
+
+    setIsSubmitting(true);
 
     if (!validateCardNumber(cardNumber)) {
       toast({
@@ -384,6 +376,3 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       </div>
     </form>
   );
-};
-
-export default PaymentForm;
