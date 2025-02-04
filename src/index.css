@@ -128,7 +128,7 @@
 .neonText {
   color: #fff;
   font-family: "Sacramento", sans-serif;
-  font-size: 6.2rem;
+  font-size: 3.5rem; /* Reduced from 6.2rem */
   text-shadow:
     0 0 7px #fff,
     0 0 10px #fff,
