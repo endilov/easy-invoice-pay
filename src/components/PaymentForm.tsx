@@ -376,3 +376,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       </div>
     </form>
   );
+};
+
+export default PaymentForm;
