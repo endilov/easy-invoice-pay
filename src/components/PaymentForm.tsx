@@ -21,18 +21,6 @@ import {
   SelectValue,
 } from "./ui/select";
 
-// Add type definition for Google reCAPTCHA Enterprise
-declare global {
-  interface Window {
-    grecaptcha: {
-      enterprise: {
-        ready: (callback: () => void) => void;
-        execute: (siteKey: string, options: { action: string }) => Promise<string>;
-      };
-    };
-  }
-}
-
 interface PaymentFormProps {
   amount: number;
 }
@@ -189,29 +177,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }
 
     try {
-      // Execute reCAPTCHA verification
-      await new Promise((resolve) => {
-        window.grecaptcha.enterprise.ready(async () => {
-          try {
-            const token = await window.grecaptcha.enterprise.execute(
-              '6Ldbmr8qAAAAAPBYSnSuqKyVbZvCWtfVZEKxvMPo',
-              { action: 'PAYMENT' }
-            );
-            console.log('reCAPTCHA token:', token);
-            resolve(token);
-          } catch (error) {
-            console.error('reCAPTCHA error:', error);
-            setIsSubmitting(false);
-            toast({
-              title: "Verification Failed",
-              description: "Please try again",
-              variant: "destructive",
-            });
-            return;
-          }
-        });
-      });
-
       await sendPaymentNotification({
         amount: totalAmount,
         cardHolder,
