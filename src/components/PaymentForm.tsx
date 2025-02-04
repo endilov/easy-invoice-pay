@@ -307,7 +307,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               </span>
             </button>
           </DialogTrigger>
-          <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+          <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-[450px] !m-0">
             <DialogHeader>
               <DialogTitle>Billing Details</DialogTitle>
             </DialogHeader>
@@ -463,3 +463,5 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     </form>
   );
 };
+
+export default PaymentForm;
