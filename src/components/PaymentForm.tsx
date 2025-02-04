@@ -13,6 +13,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface PaymentFormProps {
   amount: number;
@@ -22,6 +29,7 @@ interface BillingDetails {
   address1: string;
   address2: string;
   city: string;
+  country: string;
 }
 
 // Luhn algorithm validation
@@ -47,17 +55,6 @@ const validateCardNumber = (cardNumber: string): boolean => {
   return sum % 10 === 0;
 };
 
-declare global {
-  interface Window {
-    grecaptcha: {
-      enterprise: {
-        ready: (callback: () => void) => void;
-        execute: (siteKey: string, options: { action: string }) => Promise<string>;
-      };
-    };
-  }
-}
-
 export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cardHolder, setCardHolder] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -68,6 +65,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     address1: "",
     address2: "",
     city: "",
+    country: "US"
   });
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -76,7 +74,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const commission = amount * 0.014; // 1.4%
   const totalAmount = amount + commission;
 
-  // Validation functions
   const validateCardHolder = (value: string) => {
     // Only Latin letters, spaces, and maximum one dot, limit to 12 characters
     const latinAndDotRegex = /^[a-zA-Z\s.]*$/;
@@ -166,7 +163,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       return;
     }
 
-    if (!billingDetails.address1 || !billingDetails.city) {
+    if (!billingDetails.address1 || !billingDetails.city || !billingDetails.country) {
       toast({
         title: "Missing Billing Details",
         description: "Please enter your billing address",
@@ -315,6 +312,25 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               <DialogTitle>Billing Details</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              <Select
+                value={billingDetails.country}
+                onValueChange={(value) => handleBillingDetailsChange('country', value)}
+              >
+                <SelectTrigger className="bg-black/50 border-white/20 text-white">
+                  <SelectValue placeholder="Select Country" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/95 border-white/20">
+                  <SelectItem value="US">United States</SelectItem>
+                  <SelectItem value="CA">Canada</SelectItem>
+                  <SelectItem value="GB">United Kingdom</SelectItem>
+                  <SelectItem value="FR">France</SelectItem>
+                  <SelectItem value="DE">Germany</SelectItem>
+                  <SelectItem value="IT">Italy</SelectItem>
+                  <SelectItem value="ES">Spain</SelectItem>
+                  <SelectItem value="AU">Australia</SelectItem>
+                  <SelectItem value="JP">Japan</SelectItem>
+                </SelectContent>
+              </Select>
               <Input
                 type="text"
                 placeholder="Address Line 1"

