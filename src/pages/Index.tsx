@@ -1,5 +1,4 @@
 import { PaymentForm } from "@/components/PaymentForm";
-import AdminPanel from "@/components/AdminPanel";
 import { CreditCard, Globe, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export default function Index() {
@@ -18,7 +17,6 @@ export default function Index() {
   const description = searchParams.get('description');
   const website = searchParams.get('website');
   const refundPolicy = searchParams.get('refundPolicy');
-  const [clickCount, setClickCount] = useState(0);
 
   // Redirect if no parameters are present
   useEffect(() => {
@@ -29,35 +27,6 @@ export default function Index() {
     }
   }, [searchParams]);
 
-  // Handle clicks to open admin panel
-  useEffect(() => {
-    const handleClick = () => {
-      setClickCount(prev => {
-        const newCount = prev + 1;
-        console.log("Click count:", newCount);
-        
-        if (newCount === 10) {
-          const adminTrigger = document.getElementById('admin-trigger') as HTMLDivElement;
-          if (adminTrigger) {
-            adminTrigger.click();
-          }
-          return 0; // Reset count after opening
-        }
-        
-        // Reset count after 2 seconds of inactivity
-        setTimeout(() => {
-          setClickCount(0);
-          console.log("Click count reset due to inactivity");
-        }, 2000);
-        
-        return newCount;
-      });
-    };
-
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, []);
-
   console.log("Current amount:", amount);
   console.log("Current description:", description);
   console.log("Current website:", website);
@@ -65,8 +34,6 @@ export default function Index() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden animated-bg">
-      <AdminPanel />
-      
       <div className="flex flex-col items-center space-y-4 z-10 w-full max-w-md px-4">
         {description && (
           <div className="w-full bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 shadow-xl animate-fadeIn">

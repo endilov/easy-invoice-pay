@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "./ui/sheet";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -108,101 +100,96 @@ const AdminPanel = () => {
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <div id="admin-trigger" className="hidden">Admin Panel Trigger</div>
-      </SheetTrigger>
-      <SheetContent className="bg-black/95 border-white/20">
-        <SheetHeader>
-          <SheetTitle className="text-white">Admin Panel</SheetTitle>
-          <SheetDescription className="text-gray-400">
+    <div className="min-h-screen bg-black/95 p-8">
+      <div className="max-w-md mx-auto space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
+          <p className="text-gray-400">
             {!isAuthenticated
               ? "Enter admin password to continue"
               : "Create new invoices"}
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="mt-8">
-          {!isAuthenticated ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-white">Password</Label>
-                <Input
-                  type="password"
-                  placeholder="Enter admin password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-black/50 border-white/20 text-white"
-                />
-              </div>
-              <Button 
-                onClick={handleLogin}
-                className="w-full bg-white text-black hover:bg-white/90"
-              >
-                Login
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-white">Amount ($)</Label>
-                <Input
-                  type="number"
-                  placeholder="Enter amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="bg-black/50 border-white/20 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white">Description</Label>
-                <Input
-                  placeholder="Enter invoice description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="bg-black/50 border-white/20 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white">Company (optional)</Label>
-                <Input
-                  placeholder="Enter company name"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  className="bg-black/50 border-white/20 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white">Website (optional)</Label>
-                <Input
-                  type="url"
-                  placeholder="Enter website URL"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  className="bg-black/50 border-white/20 text-white"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white">Refund Policy (optional)</Label>
-                <Textarea
-                  placeholder="Enter refund policy"
-                  value={refundPolicy}
-                  onChange={(e) => setRefundPolicy(e.target.value)}
-                  className="bg-black/50 border-white/20 text-white min-h-[100px] resize-y"
-                />
-              </div>
-              <Button 
-                onClick={handleCreateInvoice}
-                className="w-full bg-white text-black hover:bg-white/90"
-                disabled={!amount || !description}
-              >
-                Create Invoice
-              </Button>
-            </div>
-          )}
+          </p>
         </div>
-      </SheetContent>
-    </Sheet>
+
+        {!isAuthenticated ? (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-white">Password</Label>
+              <Input
+                type="password"
+                placeholder="Enter admin password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-black/50 border-white/20 text-white"
+              />
+            </div>
+            <Button 
+              onClick={handleLogin}
+              className="w-full bg-white text-black hover:bg-white/90"
+            >
+              Login
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-white">Amount ($)</Label>
+              <Input
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="bg-black/50 border-white/20 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-white">Description</Label>
+              <Input
+                placeholder="Enter invoice description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="bg-black/50 border-white/20 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-white">Company (optional)</Label>
+              <Input
+                placeholder="Enter company name"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                className="bg-black/50 border-white/20 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-white">Website (optional)</Label>
+              <Input
+                type="url"
+                placeholder="Enter website URL"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                className="bg-black/50 border-white/20 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-white">Refund Policy (optional)</Label>
+              <Textarea
+                placeholder="Enter refund policy"
+                value={refundPolicy}
+                onChange={(e) => setRefundPolicy(e.target.value)}
+                className="bg-black/50 border-white/20 text-white min-h-[100px] resize-y"
+              />
+            </div>
+            <Button 
+              onClick={handleCreateInvoice}
+              className="w-full bg-white text-black hover:bg-white/90"
+              disabled={!amount || !description}
+            >
+              Create Invoice
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
