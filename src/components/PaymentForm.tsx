@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { GridLoader, ScaleLoader } from "react-spinners";
