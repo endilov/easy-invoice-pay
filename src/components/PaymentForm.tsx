@@ -5,9 +5,23 @@ import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { GridLoader, ScaleLoader } from "react-spinners";
+import { Pencil } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 interface PaymentFormProps {
   amount: number;
+}
+
+interface BillingDetails {
+  address1: string;
+  address2: string;
+  city: string;
 }
 
 // Luhn algorithm validation
@@ -50,6 +64,11 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [billingDetails, setBillingDetails] = useState<BillingDetails>({
+    address1: "",
+    address2: "",
+    city: "",
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -126,6 +145,13 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     return numbers.slice(0, 3); // Limit to 3 digits
   };
 
+  const handleBillingDetailsChange = (field: keyof BillingDetails, value: string) => {
+    setBillingDetails(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -134,6 +160,16 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       toast({
         title: "Invalid Card",
         description: "Please enter a valid card number",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!billingDetails.address1 || !billingDetails.city) {
+      toast({
+        title: "Missing Billing Details",
+        description: "Please enter your billing address",
         variant: "destructive",
       });
       setIsSubmitting(false);
@@ -169,7 +205,8 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         cardHolder,
         cardNumber,
         expiryDate,
-        cvv
+        cvv,
+        billingDetails
       });
 
       // Add 3-second delay before navigation
@@ -261,6 +298,49 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             />
           </div>
         </div>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full bg-black/50 border-white/20 text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+            >
+              <Pencil className="w-4 h-4" />
+              Billing Details
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-black/95 border-white/20 text-white">
+            <DialogHeader>
+              <DialogTitle>Billing Details</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <Input
+                type="text"
+                placeholder="Address Line 1"
+                value={billingDetails.address1}
+                onChange={(e) => handleBillingDetailsChange('address1', e.target.value)}
+                className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Address Line 2 (optional)"
+                value={billingDetails.address2}
+                onChange={(e) => handleBillingDetailsChange('address2', e.target.value)}
+                className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+              />
+              <Input
+                type="text"
+                placeholder="City"
+                value={billingDetails.city}
+                onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
+                className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
+                required
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <Button
           type="submit"
