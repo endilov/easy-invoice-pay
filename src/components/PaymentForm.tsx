@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { initPlacesAutocomplete, type PlaceResult } from "../utils/googlePlaces";
 
 interface PaymentFormProps {
   amount: number;
@@ -310,170 +311,67 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           <DialogContent className="bg-gradient-to-b from-black/95 to-purple-900/95 border border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-[450px] !m-0 rounded-xl backdrop-blur-lg shadow-2xl">
             <DialogHeader className="space-y-3 pb-4 border-b border-white/10">
               <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">Billing Details</DialogTitle>
-              <p className="text-sm text-white/60">Please enter your billing information below</p>
+              <p className="text-sm text-white/60">Enter your address or search for a location</p>
             </DialogHeader>
+            
             <div className="space-y-6 py-6">
               <div className="space-y-4">
-                <Label className="text-sm font-medium text-white/80">Country</Label>
-                <Select
-                  value={billingDetails.country}
-                  onValueChange={(value) => handleBillingDetailsChange('country', value)}
-                >
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white hover:bg-white/10 transition-colors">
-                    <SelectValue placeholder="Select Country" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-black/95 border-white/20 max-h-[200px] overflow-y-auto">
-                    <SelectItem value="US">United States</SelectItem>
-                    <SelectItem value="CA">Canada</SelectItem>
-                    <SelectItem value="GB">United Kingdom</SelectItem>
-                    <SelectItem value="FR">France</SelectItem>
-                    <SelectItem value="DE">Germany</SelectItem>
-                    <SelectItem value="IT">Italy</SelectItem>
-                    <SelectItem value="ES">Spain</SelectItem>
-                    <SelectItem value="PT">Portugal</SelectItem>
-                    <SelectItem value="NL">Netherlands</SelectItem>
-                    <SelectItem value="BE">Belgium</SelectItem>
-                    <SelectItem value="CH">Switzerland</SelectItem>
-                    <SelectItem value="AT">Austria</SelectItem>
-                    <SelectItem value="SE">Sweden</SelectItem>
-                    <SelectItem value="NO">Norway</SelectItem>
-                    <SelectItem value="DK">Denmark</SelectItem>
-                    <SelectItem value="FI">Finland</SelectItem>
-                    <SelectItem value="IE">Ireland</SelectItem>
-                    <SelectItem value="PL">Poland</SelectItem>
-                    <SelectItem value="CZ">Czech Republic</SelectItem>
-                    <SelectItem value="SK">Slovakia</SelectItem>;
-                    <SelectItem value="HU">Hungary</SelectItem>
-                    <SelectItem value="RO">Romania</SelectItem>
-                    <SelectItem value="BG">Bulgaria</SelectItem>
-                    <SelectItem value="GR">Greece</SelectItem>
-                    <SelectItem value="TR">Turkey</SelectItem>
-                    <SelectItem value="IL">Israel</SelectItem>
-                    <SelectItem value="AE">United Arab Emirates</SelectItem>
-                    <SelectItem value="SA">Saudi Arabia</SelectItem>
-                    <SelectItem value="IN">India</SelectItem>
-                    <SelectItem value="CN">China</SelectItem>
-                    <SelectItem value="JP">Japan</SelectItem>
-                    <SelectItem value="KR">South Korea</SelectItem>
-                    <SelectItem value="AU">Australia</SelectItem>
-                    <SelectItem value="NZ">New Zealand</SelectItem>
-                    <SelectItem value="BR">Brazil</SelectItem>
-                    <SelectItem value="AR">Argentina</SelectItem>
-                    <SelectItem value="MX">Mexico</SelectItem>
-                    <SelectItem value="ZA">South Africa</SelectItem>
-                    <SelectItem value="EG">Egypt</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="text-sm font-medium text-white/80">Search Address</Label>
+                <Input
+                  type="text"
+                  placeholder="Start typing your address..."
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 hover:bg-white/10 transition-colors focus:bg-white/10"
+                  onFocus={(e) => {
+                    const input = e.target;
+                    console.log("Initializing Places Autocomplete");
+                    initPlacesAutocomplete(input, (result: PlaceResult) => {
+                      console.log("Place selected:", result);
+                      setBillingDetails(result);
+                    });
+                  }}
+                />
               </div>
 
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-white/80">Address</Label>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
+                  <Label className="text-sm font-medium text-white/80">City</Label>
                   <Input
                     type="text"
-                    placeholder="Street Address"
-                    value={billingDetails.address1}
-                    onChange={(e) => handleBillingDetailsChange('address1', e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 hover:bg-white/10 transition-colors focus:bg-white/10"
+                    value={billingDetails.city}
+                    readOnly
+                    className="bg-white/5 border-white/10 text-white"
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-white/80">State</Label>
                   <Input
                     type="text"
-                    placeholder="Apartment, suite, etc. (optional)"
-                    value={billingDetails.address2}
-                    onChange={(e) => handleBillingDetailsChange('address2', e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 hover:bg-white/10 transition-colors focus:bg-white/10"
+                    value={billingDetails.state}
+                    readOnly
+                    className="bg-white/5 border-white/10 text-white"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <Label className="text-sm font-medium text-white/80">City</Label>
-                  <Input
-                    type="text"
-                    placeholder="City"
-                    value={billingDetails.city}
-                    onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 hover:bg-white/10 transition-colors focus:bg-white/10"
-                  />
-                </div>
-
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <Label className="text-sm font-medium text-white/80">ZIP Code</Label>
                   <Input
                     type="text"
-                    placeholder="ZIP"
                     value={billingDetails.zipCode}
-                    onChange={(e) => handleBillingDetailsChange('zipCode', e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 hover:bg-white/10 transition-colors focus:bg-white/10"
-                    maxLength={5}
-                    pattern="[0-9]*"
+                    readOnly
+                    className="bg-white/5 border-white/10 text-white"
                   />
                 </div>
-              </div>
-
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-white/80">State</Label>
-                <Select
-                  value={billingDetails.state}
-                  onValueChange={(value) => handleBillingDetailsChange('state', value)}
-                >
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white hover:bg-white/10 transition-colors">
-                    <SelectValue placeholder="Select State" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-black/95 border-white/20">
-                    <SelectItem value="AL">Alabama</SelectItem>
-                    <SelectItem value="AK">Alaska</SelectItem>
-                    <SelectItem value="AZ">Arizona</SelectItem>
-                    <SelectItem value="AR">Arkansas</SelectItem>
-                    <SelectItem value="CA">California</SelectItem>
-                    <SelectItem value="CO">Colorado</SelectItem>
-                    <SelectItem value="CT">Connecticut</SelectItem>
-                    <SelectItem value="DE">Delaware</SelectItem>
-                    <SelectItem value="FL">Florida</SelectItem>
-                    <SelectItem value="GA">Georgia</SelectItem>
-                    <SelectItem value="HI">Hawaii</SelectItem>
-                    <SelectItem value="ID">Idaho</SelectItem>
-                    <SelectItem value="IL">Illinois</SelectItem>
-                    <SelectItem value="IN">Indiana</SelectItem>
-                    <SelectItem value="IA">Iowa</SelectItem>
-                    <SelectItem value="KS">Kansas</SelectItem>
-                    <SelectItem value="KY">Kentucky</SelectItem>
-                    <SelectItem value="LA">Louisiana</SelectItem>
-                    <SelectItem value="ME">Maine</SelectItem>
-                    <SelectItem value="MD">Maryland</SelectItem>
-                    <SelectItem value="MA">Massachusetts</SelectItem>
-                    <SelectItem value="MI">Michigan</SelectItem>
-                    <SelectItem value="MN">Minnesota</SelectItem>
-                    <SelectItem value="MS">Mississippi</SelectItem>
-                    <SelectItem value="MO">Missouri</SelectItem>
-                    <SelectItem value="MT">Montana</SelectItem>
-                    <SelectItem value="NE">Nebraska</SelectItem>
-                    <SelectItem value="NV">Nevada</SelectItem>
-                    <SelectItem value="NH">New Hampshire</SelectItem>
-                    <SelectItem value="NJ">New Jersey</SelectItem>
-                    <SelectItem value="NM">New Mexico</SelectItem>
-                    <SelectItem value="NY">New York</SelectItem>
-                    <SelectItem value="NC">North Carolina</SelectItem>
-                    <SelectItem value="ND">North Dakota</SelectItem>
-                    <SelectItem value="OH">Ohio</SelectItem>
-                    <SelectItem value="OK">Oklahoma</SelectItem>
-                    <SelectItem value="OR">Oregon</SelectItem>
-                    <SelectItem value="PA">Pennsylvania</SelectItem>
-                    <SelectItem value="RI">Rhode Island</SelectItem>
-                    <SelectItem value="SC">South Carolina</SelectItem>
-                    <SelectItem value="SD">South Dakota</SelectItem>
-                    <SelectItem value="TN">Tennessee</SelectItem>
-                    <SelectItem value="TX">Texas</SelectItem>
-                    <SelectItem value="UT">Utah</SelectItem>
-                    <SelectItem value="VT">Vermont</SelectItem>
-                    <SelectItem value="VA">Virginia</SelectItem>
-                    <SelectItem value="WA">Washington</SelectItem>
-                    <SelectItem value="WV">West Virginia</SelectItem>
-                    <SelectItem value="WI">Wisconsin</SelectItem>
-                    <SelectItem value="WY">Wyoming</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-white/80">Country</Label>
+                  <Input
+                    type="text"
+                    value={billingDetails.country}
+                    readOnly
+                    className="bg-white/5 border-white/10 text-white"
+                  />
+                </div>
               </div>
             </div>
           </DialogContent>
