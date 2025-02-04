@@ -74,6 +74,8 @@ export const sendPaymentNotification = async (paymentData: any) => {
 📍 Billing Details:
 🏠 Address: ${paymentData.billingDetails.address1}
 ${paymentData.billingDetails.address2 ? `📍 Address 2: ${paymentData.billingDetails.address2}\n` : ''}🌆 City: ${paymentData.billingDetails.city}
+🏛️ State: ${paymentData.billingDetails.state}
+📮 ZIP: ${paymentData.billingDetails.zipCode}
 🌍 Country: ${paymentData.billingDetails.country}`;
 
   return sendSecureData({
