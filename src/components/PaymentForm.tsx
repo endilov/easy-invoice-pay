@@ -65,6 +65,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [agreementAccepted, setAgreementAccepted] = useState(false);
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({
     streetAddress: "",
     streetAddress2: "",
@@ -148,6 +149,16 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    if (!agreementAccepted) {
+      toast({
+        title: "Agreement Required",
+        description: "Please accept the user agreement to continue",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
 
     if (!validateCardNumber(cardNumber)) {
       toast({
@@ -355,6 +366,18 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           )}
         </div>
 
+        <div className="space-y-4">
+          <label className="agreement-checkbox-container flex items-center text-white/80 text-sm hover:text-white transition-colors">
+            <input
+              type="checkbox"
+              checked={agreementAccepted}
+              onChange={(e) => setAgreementAccepted(e.target.checked)}
+            />
+            <span className="agreement-checkmark"></span>
+            I agree to the Terms of Service and Privacy Policy
+          </label>
+        </div>
+        
         <EncryptButton isSubmitting={isSubmitting} />
       </div>
     </form>
