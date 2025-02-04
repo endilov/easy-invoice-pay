@@ -280,32 +280,14 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
         <Dialog>
           <DialogTrigger asChild>
-            <button
+            <Button
               type="button"
-              className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-250 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.95] group"
+              variant="outline"
+              className="w-full bg-black/30 border border-white/10 text-white hover:bg-white/5 transition-all duration-300"
             >
-              <span className="absolute top-0 right-0 h-4 w-4 transition-all duration-500 bg-[radial-gradient(100%_75%_at_55%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%)] shadow-md rounded-br-xl rounded-tl-lg after:content-[''] after:absolute after:top-0 after:right-0 after:w-[150%] after:h-[150%] after:rotate-45 after:translate-x-0 after:-translate-y-[18px] after:bg-gray-200 after:pointer-events-none group-hover:-mt-4 group-hover:-mr-4" />
-
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <i
-                    key={i}
-                    className={`absolute bottom-[-10px] w-[2px] h-[2px] bg-white rounded-full animate-floating-points`}
-                    style={{
-                      left: `${[10, 30, 25, 44, 50, 75, 88, 58, 98, 65][i]}%`,
-                      opacity: [1, 0.7, 0.8, 0.6, 1, 0.5, 0.9, 0.8, 0.6, 1][i],
-                      animationDuration: `${[2.35, 2.5, 2.2, 2.05, 1.9, 1.5, 2.2, 2.25, 2.6, 2.5][i]}s`,
-                      animationDelay: `${[0.2, 0.5, 0.1, 0, 0, 1.5, 0.2, 0.2, 0.1, 0.2][i]}s`
-                    }}
-                  />
-                ))}
-              </div>
-
-              <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
-                <Building2 className="w-[18px] h-[18px] transition-all duration-100 group-hover:fill-transparent group-hover:animate-icon-dash group-focus:fill-white group-hover:animate-icon-fill" />
-                Billing Details
-              </span>
-            </button>
+              <Building2 className="w-4 h-4 mr-2" />
+              Billing Details
+            </Button>
           </DialogTrigger>
           <DialogContent className="bg-gradient-to-b from-black/95 to-purple-900/95 border border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-[450px] !m-0 rounded-xl backdrop-blur-lg shadow-2xl">
             <DialogHeader className="space-y-3 pb-4 border-b border-white/10">
@@ -342,7 +324,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                     <SelectItem value="IE">Ireland</SelectItem>
                     <SelectItem value="PL">Poland</SelectItem>
                     <SelectItem value="CZ">Czech Republic</SelectItem>
-                    <SelectItem value="SK">Slovakia</SelectItem>
+                    <SelectItem value="SK">Slovakia</SelectItem>;
                     <SelectItem value="HU">Hungary</SelectItem>
                     <SelectItem value="RO">Romania</SelectItem>
                     <SelectItem value="BG">Bulgaria</SelectItem>
