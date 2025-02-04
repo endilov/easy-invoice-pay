@@ -6,8 +6,9 @@ import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { GridLoader } from "react-spinners";
-import { Building2, CreditCard } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { EncryptButton } from "./EncryptButton";
+import { CardTypeIcon } from "./CardTypeIcon";
 import {
   Dialog,
   DialogContent,
@@ -219,38 +220,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }
   };
 
-  const getCardIcon = (cardNumber: string) => {
-    const firstDigit = cardNumber.charAt(0);
-    
-    const baseClasses = "absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 transition-all duration-300 opacity-70";
-    
-    switch (firstDigit) {
-      case "4":
-        return (
-          <div className={`${baseClasses} text-blue-400`}>
-            <CreditCard className="w-full h-full" />
-            <span className="absolute -bottom-4 text-xs font-medium text-blue-400/70">VISA</span>
-          </div>
-        );
-      case "5":
-        return (
-          <div className={`${baseClasses} text-red-400`}>
-            <CreditCard className="w-full h-full" />
-            <span className="absolute -bottom-4 text-xs font-medium text-red-400/70">MASTERCARD</span>
-          </div>
-        );
-      case "6":
-        return (
-          <div className={`${baseClasses} text-purple-400`}>
-            <CreditCard className="w-full h-full" />
-            <span className="absolute -bottom-4 text-xs font-medium text-purple-400/70">AMEX</span>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-6 bg-black/20 backdrop-blur-xl p-8 rounded-xl border border-white/10 shadow-2xl animate-fadeIn relative">
       {isSubmitting && (
@@ -282,7 +251,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
             className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors pr-12"
             required
           />
-          {getCardIcon(cardNumber)}
+          <CardTypeIcon cardNumber={cardNumber} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
