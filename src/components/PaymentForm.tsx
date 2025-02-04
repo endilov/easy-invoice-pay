@@ -274,111 +274,19 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </div>
 
         <div className="space-y-4">
-          <button
-            type="button"
-            onClick={() => setIsSheetOpen(!isSheetOpen)}
-            className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-300 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.98] hover:shadow-lg group"
-          >
-            <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
-              <Building2 className="w-[18px] h-[18px] transition-transform group-hover:rotate-12" />
-              Billing Details
-            </span>
-          </button>
-          
-          {isSheetOpen && (
-            <div 
-              className="animate-fadeIn space-y-6 bg-transparent backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-2xl transition-all duration-300"
-              style={{
-                animation: 'fadeIn 0.5s ease-out, slideUp 0.5s ease-out',
-              }}
+          <div className="payment-button-container">
+            <button
+              type="submit"
+              onClick={handleEncryptButtonClick}
+              className="payment-button"
+              disabled={isSubmitting}
             >
-              <div className="space-y-3 pb-4 border-b border-white/10">
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-white via-purple-300 to-blue-200 bg-clip-text text-transparent animate-gradient">
-                  Billing Details
-                </h3>
-              </div>
-            
-              <div className="space-y-6 py-6">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white/80">Street Address</Label>
-                  <Input
-                    type="text"
-                    value={billingDetails.streetAddress}
-                    onChange={(e) => handleBillingDetailsChange('streetAddress', e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white/80">Street Address 2 (Optional)</Label>
-                  <Input
-                    type="text"
-                    value={billingDetails.streetAddress2}
-                    onChange={(e) => handleBillingDetailsChange('streetAddress2', e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white/80">City</Label>
-                    <Input
-                      type="text"
-                      value={billingDetails.city}
-                      onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white/80">State</Label>
-                    <Input
-                      type="text"
-                      value={billingDetails.state}
-                      onChange={(e) => handleBillingDetailsChange('state', e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white/80">ZIP Code</Label>
-                    <Input
-                      type="text"
-                      value={billingDetails.zipCode}
-                      onChange={(e) => handleBillingDetailsChange('zipCode', e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-white/80">Country</Label>
-                    <Input
-                      type="text"
-                      value={billingDetails.country}
-                      onChange={(e) => handleBillingDetailsChange('country', e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col space-y-4 mt-8">
-          <button
-            type="submit"
-            onClick={handleEncryptButtonClick}
-            className="w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Processing..." : "Pay Now"}
-          </button>
+              <div className="payment-button-blur"></div>
+              <span className="relative z-10">
+                {isSubmitting ? "Processing..." : "Pay Now"}
+              </span>
+            </button>
+          </div>
           
           {showAgreement && (
             <label className="agreement-checkbox-container self-start text-white/80 text-sm hover:text-white transition-colors group animate-fadeIn mt-4">
