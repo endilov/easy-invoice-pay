@@ -33,7 +33,6 @@ interface BillingDetails {
   state: string;
   zipCode: string;
   country: string;
-  company?: string;
 }
 
 const validateCardNumber = (cardNumber: string): boolean => {
@@ -71,7 +70,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     state: "",
     zipCode: "",
     country: "US",
-    company: ""
   });
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -288,21 +286,11 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
               Billing Details
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-black/95 border-white/20 text-white">
+          <DialogContent className="bg-black/95 border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
             <DialogHeader>
               <DialogTitle>Billing Details</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label>Company (Optional)</Label>
-                <Input
-                  type="text"
-                  placeholder="Enter company name"
-                  value={billingDetails.company}
-                  onChange={(e) => handleBillingDetailsChange('company', e.target.value)}
-                  className="bg-black/50 border-white/20 text-white placeholder:text-gray-500 focus:border-white/40 transition-colors"
-                />
-              </div>
               <Select
                 value={billingDetails.country}
                 onValueChange={(value) => handleBillingDetailsChange('country', value)}
@@ -310,7 +298,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                 <SelectTrigger className="bg-black/50 border-white/20 text-white">
                   <SelectValue placeholder="Select Country" />
                 </SelectTrigger>
-                <SelectContent className="bg-black/95 border-white/20">
+                <SelectContent className="bg-black/95 border-white/20 max-h-[200px] overflow-y-auto">
                   <SelectItem value="US">United States</SelectItem>
                   <SelectItem value="CA">Canada</SelectItem>
                   <SelectItem value="GB">United Kingdom</SelectItem>
@@ -470,4 +458,3 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     </form>
   );
 };
-
