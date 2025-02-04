@@ -10,7 +10,7 @@ export const EncryptButton = ({ isSubmitting }: { isSubmitting: boolean }) => {
     >
       <div className="relative z-10 flex items-center justify-center gap-2">
         <Lock className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
-        <span className="text-lg">
+        <span>
           {isSubmitting ? "Processing..." : "Pay Now"}
         </span>
       </div>
