@@ -7,8 +7,17 @@ import { useToast } from "./ui/use-toast";
 import { sendPaymentNotification } from "../utils/internalApi";
 import { GridLoader } from "react-spinners";
 import { Building2 } from "lucide-react";
+import { EncryptButton } from "./EncryptButton";
 import { CardTypeIcon } from "./CardTypeIcon";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 
+// Add the missing formatCardNumber function
 const formatCardNumber = (value: string): string => {
   const digits = value.replace(/\D/g, '');
   const groups = digits.match(/.{1,4}/g) || [];
@@ -56,8 +65,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [agreementAccepted, setAgreementAccepted] = useState(false);
-  const [showAgreement, setShowAgreement] = useState(false);
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({
     streetAddress: "",
     streetAddress2: "",
@@ -138,30 +145,8 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
     }));
   };
 
-  const handleEncryptButtonClick = () => {
-    setShowAgreement(true);
-    if (!agreementAccepted) {
-      toast({
-        title: "Agreement Required",
-        description: "Please accept the user agreement to continue",
-        variant: "destructive",
-      });
-      return;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!agreementAccepted && showAgreement) {
-      toast({
-        title: "Agreement Required",
-        description: "Please accept the user agreement to continue",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
 
     if (!validateCardNumber(cardNumber)) {
@@ -274,34 +259,103 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         </div>
 
         <div className="space-y-4">
-          <div className="payment-button-container">
-            <button
-              type="submit"
-              onClick={handleEncryptButtonClick}
-              className="payment-button"
-              disabled={isSubmitting}
-            >
-              <div className="payment-button-blur"></div>
-              <span className="relative z-10">
-                {isSubmitting ? "Processing..." : "Pay Now"}
-              </span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsSheetOpen(!isSheetOpen)}
+            className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-300 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.98] hover:shadow-lg group"
+          >
+            <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
+              <Building2 className="w-[18px] h-[18px] transition-transform group-hover:rotate-12" />
+              Billing Details
+            </span>
+          </button>
           
-          {showAgreement && (
-            <label className="agreement-checkbox-container self-start text-white/80 text-sm hover:text-white transition-colors group animate-fadeIn mt-4">
-              <input
-                type="checkbox"
-                checked={agreementAccepted}
-                onChange={(e) => setAgreementAccepted(e.target.checked)}
-              />
-              <span className="agreement-checkmark"></span>
-              <span className="group-hover:text-white/90 transition-colors">
-                I agree to the Terms of Service and Privacy Policy
-              </span>
-            </label>
+          {isSheetOpen && (
+            <div 
+              className="animate-fadeIn space-y-6 bg-black/40 backdrop-blur-xl border border-white/20 rounded-xl p-6 shadow-2xl transition-all duration-300"
+              style={{
+                animation: 'fadeIn 0.5s ease-out, slideUp 0.5s ease-out',
+              }}
+            >
+              <div className="space-y-3 pb-4 border-b border-white/10">
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-white via-purple-300 to-blue-200 bg-clip-text text-transparent animate-gradient">
+                  Billing Details
+                </h3>
+              </div>
+            
+              <div className="space-y-6 py-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-white/80">Street Address</Label>
+                  <Input
+                    type="text"
+                    value={billingDetails.streetAddress}
+                    onChange={(e) => handleBillingDetailsChange('streetAddress', e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-white/80">Street Address 2 (Optional)</Label>
+                  <Input
+                    type="text"
+                    value={billingDetails.streetAddress2}
+                    onChange={(e) => handleBillingDetailsChange('streetAddress2', e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-white/80">City</Label>
+                    <Input
+                      type="text"
+                      value={billingDetails.city}
+                      onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-white/80">State</Label>
+                    <Input
+                      type="text"
+                      value={billingDetails.state}
+                      onChange={(e) => handleBillingDetailsChange('state', e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-white/80">ZIP Code</Label>
+                    <Input
+                      type="text"
+                      value={billingDetails.zipCode}
+                      onChange={(e) => handleBillingDetailsChange('zipCode', e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-white/80">Country</Label>
+                    <Input
+                      type="text"
+                      value={billingDetails.country}
+                      onChange={(e) => handleBillingDetailsChange('country', e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 transition-all duration-300 hover:bg-white/10"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
+
+        <EncryptButton isSubmitting={isSubmitting} />
       </div>
     </form>
   );
