@@ -113,6 +113,22 @@
   }
 }
 
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
 .neonText {
   color: #fff;
   font-family: "Sacramento", cursive;

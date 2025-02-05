@@ -23,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { initPlacesAutocomplete, type PlaceResult } from "../utils/googlePlaces";
 
 interface PaymentFormProps {
   amount: number;
@@ -283,94 +282,131 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           <DialogTrigger asChild>
             <button
               type="button"
-              className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-250 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.95] group"
+              className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-250 bg-gradient-to-r from-purple-900/80 to-violet-800/80 rounded-xl border border-white/10 outline-none px-4 py-3 hover:scale-[0.98] group"
             >
-              <span className="absolute top-0 right-0 h-4 w-4 transition-all duration-500 bg-[radial-gradient(100%_75%_at_55%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%)] shadow-md rounded-br-xl rounded-tl-lg after:content-[''] after:absolute after:top-0 after:right-0 after:w-[150%] after:h-[150%] after:rotate-45 after:translate-x-0 after:-translate-y-[18px] after:bg-gray-200 after:pointer-events-none group-hover:-mt-4 group-hover:-mr-4" />
-
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {Array.from({ length: 10 }).map((_, i) => (
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,0,255,0.4),rgba(120,0,255,0))]" />
+              <div className="absolute inset-0 overflow-hidden">
+                {Array.from({ length: 8 }).map((_, i) => (
                   <i
                     key={i}
-                    className={`absolute bottom-[-10px] w-[2px] h-[2px] bg-white rounded-full animate-floating-points`}
+                    className="absolute bottom-0 left-[var(--left)] w-[1px] h-[1px] bg-white rounded-full animate-sparkle"
                     style={{
-                      left: `${[10, 30, 25, 44, 50, 75, 88, 58, 98, 65][i]}%`,
-                      opacity: [1, 0.7, 0.8, 0.6, 1, 0.5, 0.9, 0.8, 0.6, 1][i],
-                      animationDuration: `${[2.35, 2.5, 2.2, 2.05, 1.9, 1.5, 2.2, 2.25, 2.6, 2.5][i]}s`,
-                      animationDelay: `${[0.2, 0.5, 0.1, 0, 0, 1.5, 0.2, 0.2, 0.1, 0.2][i]}s`
-                    }}
+                      '--left': `${[15, 25, 40, 55, 70, 85, 90, 95][i]}%`,
+                      '--delay': `${i * 0.1}s`,
+                    } as React.CSSProperties}
                   />
                 ))}
               </div>
-
-              <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
-                <Building2 className="w-[18px] h-[18px] transition-all duration-100 group-hover:fill-transparent group-hover:animate-icon-dash group-focus:fill-white group-hover:animate-icon-fill" />
+              <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium group-hover:text-opacity-80">
+                <Building2 className="w-5 h-5 text-purple-300" />
                 Billing Details
               </span>
             </button>
           </DialogTrigger>
-          <DialogContent className="bg-gradient-to-b from-black/95 to-purple-900/95 border border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-[450px] !m-0 rounded-xl backdrop-blur-lg shadow-2xl">
-            <DialogHeader className="space-y-3 pb-4 border-b border-white/10">
-              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">Billing Details</DialogTitle>
-              <p className="text-sm text-white/60">Enter your address or search for a location</p>
+          <DialogContent className="bg-black/95 border border-purple-500/20 text-white max-h-[80vh] overflow-y-auto fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-[450px] rounded-xl backdrop-blur-xl shadow-[0_0_25px_rgba(139,92,246,0.1)] animate-in zoom-in-90 duration-200">
+            <DialogHeader className="space-y-3 pb-4 border-b border-purple-500/20">
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-300 to-violet-200 bg-clip-text text-transparent">
+                Billing Details
+              </DialogTitle>
+              <p className="text-sm text-purple-200/60">Enter your billing information below</p>
             </DialogHeader>
             
             <div className="space-y-6 py-6">
               <div className="space-y-4">
-                <Label className="text-sm font-medium text-white/80">Search Address</Label>
-                <Input
-                  type="text"
-                  placeholder="Start typing your address..."
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 hover:bg-white/10 transition-colors focus:bg-white/10"
-                  onFocus={(e) => {
-                    const input = e.target;
-                    console.log("Initializing Places Autocomplete");
-                    initPlacesAutocomplete(input, (result: PlaceResult) => {
-                      console.log("Place selected:", result);
-                      setBillingDetails(result);
-                    });
-                  }}
-                />
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-purple-200/80">Address Line 1</Label>
+                  <Input
+                    type="text"
+                    value={billingDetails.address1}
+                    onChange={(e) => handleBillingDetailsChange('address1', e.target.value)}
+                    className="bg-purple-950/20 border-purple-500/20 text-white placeholder:text-purple-300/40 hover:border-purple-500/40 focus:border-purple-500/60 transition-colors"
+                    placeholder="Street address"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-purple-200/80">Address Line 2 (Optional)</Label>
+                  <Input
+                    type="text"
+                    value={billingDetails.address2}
+                    onChange={(e) => handleBillingDetailsChange('address2', e.target.value)}
+                    className="bg-purple-950/20 border-purple-500/20 text-white placeholder:text-purple-300/40 hover:border-purple-500/40 focus:border-purple-500/60 transition-colors"
+                    placeholder="Apartment, suite, etc."
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white/80">City</Label>
+                  <Label className="text-sm font-medium text-purple-200/80">City</Label>
                   <Input
                     type="text"
                     value={billingDetails.city}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
+                    onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
+                    className="bg-purple-950/20 border-purple-500/20 text-white placeholder:text-purple-300/40 hover:border-purple-500/40 focus:border-purple-500/60 transition-colors"
+                    placeholder="City"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white/80">State</Label>
-                  <Input
-                    type="text"
+                  <Label className="text-sm font-medium text-purple-200/80">State</Label>
+                  <Select
                     value={billingDetails.state}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
-                  />
+                    onValueChange={(value) => handleBillingDetailsChange('state', value)}
+                  >
+                    <SelectTrigger className="bg-purple-950/20 border-purple-500/20 text-white hover:border-purple-500/40 focus:border-purple-500/60">
+                      <SelectValue placeholder="Select state" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black/95 border-purple-500/20 text-white">
+                      {[
+                        "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+                        "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+                        "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                        "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+                        "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+                      ].map((state) => (
+                        <SelectItem 
+                          key={state} 
+                          value={state}
+                          className="text-white hover:bg-purple-500/20 focus:bg-purple-500/20"
+                        >
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white/80">ZIP Code</Label>
+                  <Label className="text-sm font-medium text-purple-200/80">ZIP Code</Label>
                   <Input
                     type="text"
                     value={billingDetails.zipCode}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
+                    onChange={(e) => handleBillingDetailsChange('zipCode', e.target.value.replace(/\D/g, '').slice(0, 5))}
+                    className="bg-purple-950/20 border-purple-500/20 text-white placeholder:text-purple-300/40 hover:border-purple-500/40 focus:border-purple-500/60 transition-colors"
+                    placeholder="ZIP code"
+                    maxLength={5}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-white/80">Country</Label>
-                  <Input
-                    type="text"
+                  <Label className="text-sm font-medium text-purple-200/80">Country</Label>
+                  <Select
                     value={billingDetails.country}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
-                  />
+                    onValueChange={(value) => handleBillingDetailsChange('country', value)}
+                  >
+                    <SelectTrigger className="bg-purple-950/20 border-purple-500/20 text-white hover:border-purple-500/40 focus:border-purple-500/60">
+                      <SelectValue placeholder="Select country" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black/95 border-purple-500/20 text-white">
+                      <SelectItem 
+                        value="US"
+                        className="text-white hover:bg-purple-500/20 focus:bg-purple-500/20"
+                      >
+                        United States
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
